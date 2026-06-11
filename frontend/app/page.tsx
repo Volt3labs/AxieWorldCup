@@ -43,16 +43,99 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="hero">
-        <h1>Gift an Axie. Draw a country.</h1>
-        <p>
-          Send one Axie to the World Cup contract. The contract forwards it to the release wallet, then Ronin VRF mints one random ERC-1155 country NFT to your wallet.
-        </p>
-        <div className="actions">
-          <Link className="button" href="/inventory">Check inventory</Link>
-          <a className="button secondary" href="#gift">Gift Axie</a>
-        </div>
-      </section>
+      <section
+  className="hero"
+  style={{
+    padding: "8rem 1.5rem 6rem",
+    textAlign: "center",
+    maxWidth: "1000px",
+    margin: "0 auto"
+  }}
+>
+  <p
+    style={{
+      marginBottom: "1rem",
+      fontSize: ".85rem",
+      fontWeight: 700,
+      letterSpacing: ".15em",
+      textTransform: "uppercase",
+      opacity: 0.7
+    }}
+  >
+    Axie World Cup
+  </p>
+
+  <h1
+    style={{
+      fontSize: "clamp(3rem, 8vw, 6rem)",
+      lineHeight: 0.95,
+      letterSpacing: "-0.05em",
+      marginBottom: "2rem"
+    }}
+  >
+    Gift an Axie.
+    <br />
+    Draw a Country.
+  </h1>
+
+  <p
+    style={{
+      maxWidth: "820px",
+      margin: "0 auto",
+      fontSize: "1.25rem",
+      lineHeight: 1.9,
+      opacity: 0.85
+    }}
+  >
+    Send any Axie to the Axie World Cup contract and receive a randomly
+    assigned World Cup Country NFT. Your Axie is permanently forwarded to the
+    release wallet, while Ronin VRF ensures every country draw is provably fair
+    and completely random.
+  </p>
+
+  
+
+  <div
+    style={{
+      marginTop: "1.5rem",
+      padding: "1rem 1.25rem",
+      borderRadius: "16px",
+      background: "rgba(255,255,255,.05)",
+      display: "inline-block",
+      maxWidth: "100%"
+    }}
+  >
+    <code
+      style={{
+        fontSize: ".9rem",
+        wordBreak: "break-all"
+      }}
+    >
+      0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB
+    </code>
+  </div>
+
+  <div
+    style={{
+      marginTop: "3rem",
+      display: "flex",
+      justifyContent: "center"
+    }}
+  >
+    <button
+      className="button secondary"
+      onClick={() =>
+        navigator.clipboard.writeText(
+          "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB"
+        )
+      }
+    >
+      Copy Gift Address
+    </button>
+
+  </div>
+  
+</section>
 
       <section className="section">
         <h2>48 country Axies</h2>
@@ -68,31 +151,42 @@ export default function HomePage() {
             );
           })}
         </div>
+              
+    <div
+    style={{
+      marginTop: "3rem",
+      display: "flex",
+      justifyContent: "center"
+    }}
+  >
+  <Link className="button" href="/inventory">
+        Check inventory
+      </Link>
+
+  </div>
       </section>
 
       <section className="section">
-        <h2>The process</h2>
-        <div className="grid">
-          <div className="step"><b>1.</b><br />Connect wallet on Ronin.</div>
-          <div className="step"><b>2.</b><br />Enter your Axie token ID.</div>
-          <div className="step"><b>3.</b><br />Call Axie <code>safeTransferFrom</code> to the collection contract.</div>
-          <div className="step"><b>4.</b><br />Your Axie is forwarded to the release address.</div>
-          <div className="step"><b>5.</b><br />Ronin VRF selects 1 of 48 countries.</div>
-          <div className="step"><b>6.</b><br />You receive the ERC-1155 country NFT.</div>
-        </div>
-      </section>
+  <h2>How it works</h2>
 
-      <section className="section" id="gift">
-        <h2>Gift Axie to contract</h2>
-        <div className="panel">
-          <p className="muted">Contract: {COLLECTION_ADDRESS || "Set NEXT_PUBLIC_COLLECTION_ADDRESS"}</p>
-          <div className="inputRow">
-            <input value={axieId} onChange={(e) => setAxieId(e.target.value)} placeholder="Axie token ID" />
-            <button className="button" onClick={giftAxie}>Gift Axie</button>
-          </div>
-          {status && <div className="status">{status}</div>}
-        </div>
-      </section>
+  <div className="grid">
+    <div className="step">
+      <b>Gift an Axie</b>
+      <p>Your Axie is sent to the AxieWorldCup contract and released.</p>
+    </div>
+
+    <div className="step">
+      <b>Receive a Country</b>
+      <p>Ronin VRF randomly draws 1 of 48 World Cup country NFTs.</p>
+    </div>
+
+    <div className="step">
+      <b>Build Your Collection</b>
+      <p>Track your countries in Inventory. Marketplace support coming soon.</p>
+    </div>
+  </div>
+</section>
+
     </main>
   );
 }

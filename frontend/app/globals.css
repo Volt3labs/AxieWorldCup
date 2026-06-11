@@ -36,3 +36,4 @@ input { flex: 1; min-width: 260px; border: 1px solid var(--line); background: #0
 .muted { color: var(--muted); }
 .status { margin-top: 12px; color: var(--gold); }
 footer { padding: 40px 32px; text-align:center; color: var(--muted); }
+
