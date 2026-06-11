@@ -1,0 +1,21 @@
+{
+  "name": "ronin-worldcup-axie",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "hardhat clean",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:saigon": "hardhat run scripts/deploy.js --network saigon",
+    "deploy:ronin": "hardhat run scripts/deploy.js --network ronin",
+    "verify:sourcify:saigon": "hardhat verify --network saigon --verifier sourcify",
+    "verify:sourcify:ronin": "hardhat verify --network ronin --verifier sourcify"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "latest",
+    "@openzeppelin/contracts": "latest",
+    "dotenv": "latest",
+    "hardhat": "latest"
+  }
+}

@@ -1,0 +1,50 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": [
+      "static/chunks/0yz5_next_dist_compiled_03ami2i._.js",
+      "static/chunks/0yz5_next_dist_shared_lib_0pe4k0p._.js",
+      "static/chunks/0yz5_next_dist_client_0_49dyi._.js",
+      "static/chunks/0yz5_next_dist_0fw-9yn._.js",
+      "static/chunks/0yz5_next_app_0d2e4yc.js",
+      "static/chunks/[next]_entry_page-loader_ts_0w_sjrk._.js",
+      "static/chunks/0yz5_react-dom_0anekni._.js",
+      "static/chunks/0yz5_1jn74ts._.js",
+      "static/chunks/[root-of-the-server]__0yjm7n6._.js",
+      "static/chunks/ronin-worldcup-axie_frontend_pages__app_0du2_q-._.js",
+      "static/chunks/turbopack-ronin-worldcup-axie_frontend_pages__app_05i7vjg._.js"
+    ],
+    "/_error": [
+      "static/chunks/0yz5_next_dist_compiled_03ami2i._.js",
+      "static/chunks/0yz5_next_dist_shared_lib_06tt_s-._.js",
+      "static/chunks/0yz5_next_dist_client_0_49dyi._.js",
+      "static/chunks/0yz5_next_dist_0hpfc2q._.js",
+      "static/chunks/[next]_entry_page-loader_ts_03zml9f._.js",
+      "static/chunks/0yz5_react-dom_0anekni._.js",
+      "static/chunks/0yz5_1jn74ts._.js",
+      "static/chunks/[root-of-the-server]__1o2arek._.js",
+      "static/chunks/ronin-worldcup-axie_frontend_pages__error_0du2_q-._.js",
+      "static/chunks/turbopack-ronin-worldcup-axie_frontend_pages__error_1wgwyql._.js"
+    ]
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/0yz5_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js",
+    "static/development/_clientMiddlewareManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_0tfl_74._.js",
+    "static/chunks/0yz5_next_dist_compiled_next-devtools_index_1zmou01.js",
+    "static/chunks/0yz5_next_dist_compiled_react-dom_203pwzm._.js",
+    "static/chunks/0yz5_next_dist_compiled_react-server-dom-turbopack_0eenso4._.js",
+    "static/chunks/0yz5_next_dist_compiled_1lhs0m6._.js",
+    "static/chunks/0yz5_next_dist_client_0nyazwr._.js",
+    "static/chunks/0yz5_next_dist_0_ji_dt._.js",
+    "static/chunks/0yz5_@swc_helpers_cjs_14gs4vo._.js",
+    "static/chunks/ronin-worldcup-axie_frontend_1anvha4._.js",
+    "static/chunks/turbopack-ronin-worldcup-axie_frontend_0kwai6g._.js"
+  ]
+};
