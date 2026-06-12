@@ -1,0 +1,12 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_not-found/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0-8n83z._.js")
+R.c("server/chunks/ssr/0yz5_next_dist_esm_build_templates_app-page_06yqwor.js")
+R.c("server/chunks/ssr/[root-of-the-server]__07hte0n._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0y_a87n._.js")
+R.c("server/chunks/ssr/ronin-worldcup-axie_frontend_0sth5jd._.js")
+R.c("server/chunks/ssr/0yz5_next_dist_client_components_0fwpsn4._.js")
+R.c("server/chunks/ssr/0yz5_next_dist_client_components_builtin_forbidden_1f7p61e.js")
+R.c("server/chunks/ssr/0yz5_next_dist_client_components_builtin_unauthorized_1tgur8h.js")
+R.c("server/chunks/ssr/0ub2_frontend__next-internal_server_app__not-found_page_actions_0z55nqk.js")
+R.m(60653)
+module.exports=R.m(60653).exports
