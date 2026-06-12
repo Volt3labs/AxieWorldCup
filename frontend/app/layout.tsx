@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         {children}
-        <footer>48 countries · ERC-1155 · Ronin</footer>
+        <footer>48 countries · ERC-1155 · <a href="https://volt3labs.com">Volt3 Labs</a></footer>
       </body>
     </html>
   );

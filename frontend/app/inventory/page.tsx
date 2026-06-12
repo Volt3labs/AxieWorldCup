@@ -74,7 +74,7 @@ export default function InventoryPage() {
 
                 <div className="id">
                   #{tokenId}
-                  {isOwned && ` · Balance ${item.balance.toString()}`}
+                  {item ? ` · Balance ${item.balance.toString()}` : ""}
                 </div>
 
                 <div className="name">{country}</div>
