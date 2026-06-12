@@ -20,7 +20,7 @@ main { min-height: 100vh; }
 .actions { display:flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
 .button { border: 1px solid var(--line); background: linear-gradient(180deg, #213a5f, #12233d); color: white; padding: 13px 18px; border-radius: 14px; font-weight: 700; cursor: pointer; }
 .button.secondary { background: transparent; color: var(--gold); }
-.section { max-width: 1120px; margin: 0 auto; padding: 28px 32px; }
+.section { max-width: 1120px; margin: 0 auto; padding: 24px 32px; }
 .section h2 { font-size: 28px; margin: 0 0 18px; }
 .slider { display: flex; gap: 16px; overflow-x: auto; padding: 8px 0 22px; scroll-snap-type: x mandatory; }
 .card { min-width: 190px; scroll-snap-align: start; border: 1px solid var(--line); background: rgba(13, 28, 49, .72); border-radius: 22px; padding: 12px; box-shadow: 0 14px 34px rgba(0,0,0,.25); }
@@ -37,3 +37,98 @@ input { flex: 1; min-width: 260px; border: 1px solid var(--line); background: #0
 .status { margin-top: 12px; color: var(--gold); }
 footer { padding: 40px 32px; text-align:center; color: var(--muted); }
 
+.sliderWrap {
+  position: relative;
+  width: 100%;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  scrollbar-width: none;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.slider:active {
+  cursor: grabbing;
+}
+
+.card {
+  flex: 0 0 220px; /* fixed card width */
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+.sliderArrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 999px;
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  backdrop-filter: blur(8px);
+}
+
+.sliderArrow.left {
+  left: 0.5rem;
+}
+
+.sliderArrow.right {
+  right: 0.5rem;
+}
+
+.sliderArrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.inventoryCard {
+  position: relative;
+}
+
+.inventoryCard.locked {
+  opacity: 0.35;
+}
+
+.inventoryCard.locked .inventoryImage {
+  filter: grayscale(1) brightness(0);
+}
+
+.inventoryCard.owned .inventoryImage {
+  filter: none;
+}
+
+.inventoryImage {
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.lockOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: 900;
+  opacity: 0.45;
+  pointer-events: none;
+}

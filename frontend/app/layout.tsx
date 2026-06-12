@@ -4,7 +4,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "World Cup Axie Countries",
-  description: "Gift an Axie, receive a random World Cup country NFT."
+  description: "Gift an Axie, receive a random World Cup country NFT.",
+  icons: {
+    icon: "/icons/AxieWorldCup.jpg",
+    shortcut: "/icons/AxieWorldCup.jpg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <nav className="nav">
-          <Link href="/"><strong>WORLD CUP AXIE</strong></Link>
+          <Link href="/"><strong>AXIE WORLD CUP 🏆</strong></Link>
           <div>
             <Link href="/">Home</Link>
             <Link href="/inventory">Inventory</Link>

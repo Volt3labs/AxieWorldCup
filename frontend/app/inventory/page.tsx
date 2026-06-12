@@ -54,13 +54,33 @@ export default function InventoryPage() {
         </div>
 
         <div className="inventoryGrid">
-          {owned.map((item) => (
-            <div className="card" key={item.tokenId}>
-              <img src={imageUrl(item.tokenId)} alt={`${item.country} Axie`} />
-              <div className="id">#{item.tokenId} · Balance {item.balance.toString()}</div>
-              <div className="name">{item.country}</div>
-            </div>
-          ))}
+          {countries.map((country, index) => {
+            const tokenId = index + 1;
+            const item = owned.find((x) => x.tokenId === tokenId);
+            const isOwned = Boolean(item);
+
+            return (
+              <div
+                className={`card inventoryCard ${isOwned ? "owned" : "locked"}`}
+                key={tokenId}
+              >
+                <img
+                  src={imageUrl(tokenId)}
+                  alt={`${country} Axie`}
+                  className="inventoryImage"
+                />
+
+                {!isOwned && <div className="lockOverlay">?</div>}
+
+                <div className="id">
+                  #{tokenId}
+                  {isOwned && ` · Balance ${item.balance.toString()}`}
+                </div>
+
+                <div className="name">{country}</div>
+              </div>
+            );
+          })}
         </div>
       </section>
     </main>

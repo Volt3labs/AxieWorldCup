@@ -93,10 +93,10 @@ const ERC1155_ABI = [
 const AXIE_ABI = [
     "function safeTransferFrom(address from, address to, uint256 tokenId)"
 ];
-const COLLECTION_ADDRESS = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_COLLECTION_ADDRESS || "";
-const AXIE_CONTRACT = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_AXIE_CONTRACT || "0x32950db2a7164aE833121501C797D79E7B79d74C";
-const RONIN_RPC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_RONIN_RPC || "https://api.roninchain.com/rpc";
-const CHAIN_ID = Number(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_CHAIN_ID || "2020");
+const COLLECTION_ADDRESS = ("TURBOPACK compile-time value", "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB") || "";
+const AXIE_CONTRACT = ("TURBOPACK compile-time value", "0x32950db2a7164aE833121501C797D79E7B79d74C") || "0x32950db2a7164aE833121501C797D79E7B79d74C";
+const RONIN_RPC = ("TURBOPACK compile-time value", "https://api.roninchain.com/rpc") || "https://api.roninchain.com/rpc";
+const CHAIN_ID = Number(("TURBOPACK compile-time value", "2020") || "2020");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
@@ -126,6 +126,35 @@ function HomePage() {
     _s();
     const [axieId, setAxieId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [status, setStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const sliderRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const isDragging = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
+    const startX = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(0);
+    const scrollLeft = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(0);
+    function scrollSlider(amount) {
+        sliderRef.current?.scrollBy({
+            left: amount,
+            behavior: "smooth"
+        });
+    }
+    function onPointerDown(e) {
+        if (!sliderRef.current) return;
+        isDragging.current = true;
+        startX.current = e.pageX - sliderRef.current.offsetLeft;
+        scrollLeft.current = sliderRef.current.scrollLeft;
+        sliderRef.current.setPointerCapture(e.pointerId);
+    }
+    function onPointerMove(e) {
+        if (!isDragging.current || !sliderRef.current) return;
+        const x = e.pageX - sliderRef.current.offsetLeft;
+        const walk = x - startX.current;
+        sliderRef.current.scrollLeft = scrollLeft.current - walk;
+    }
+    function stopDragging(e) {
+        isDragging.current = false;
+        if (e && sliderRef.current?.hasPointerCapture(e.pointerId)) {
+            sliderRef.current.releasePointerCapture(e.pointerId);
+        }
+    }
     async function giftAxie() {
         try {
             if (!window.ethereum) throw new Error("Wallet not found");
@@ -155,27 +184,12 @@ function HomePage() {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                 className: "hero",
                 style: {
-                    padding: "8rem 1.5rem 6rem",
+                    padding: "6rem 1.5rem 4rem",
                     textAlign: "center",
                     maxWidth: "1000px",
                     margin: "0 auto"
                 },
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        style: {
-                            marginBottom: "1rem",
-                            fontSize: ".85rem",
-                            fontWeight: 700,
-                            letterSpacing: ".15em",
-                            textTransform: "uppercase",
-                            opacity: 0.7
-                        },
-                        children: "Axie World Cup"
-                    }, void 0, false, {
-                        fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 55,
-                        columnNumber: 3
-                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                         style: {
                             fontSize: "clamp(3rem, 8vw, 6rem)",
@@ -187,15 +201,15 @@ function HomePage() {
                             "Gift an Axie.",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                lineNumber: 77,
-                                columnNumber: 5
+                                lineNumber: 123,
+                                columnNumber: 11
                             }, this),
                             "Draw a Country."
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 68,
-                        columnNumber: 3
+                        lineNumber: 114,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         style: {
@@ -208,8 +222,8 @@ function HomePage() {
                         children: "Send any Axie to the Axie World Cup contract and receive a randomly assigned World Cup Country NFT. Your Axie is permanently forwarded to the release wallet, while Ronin VRF ensures every country draw is provably fair and completely random."
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 81,
-                        columnNumber: 3
+                        lineNumber: 127,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         style: {
@@ -228,17 +242,17 @@ function HomePage() {
                             children: "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB"
                         }, void 0, false, {
                             fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                            lineNumber: 108,
-                            columnNumber: 5
+                            lineNumber: 152,
+                            columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 98,
-                        columnNumber: 3
+                        lineNumber: 142,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         style: {
-                            marginTop: "3rem",
+                            marginTop: "2rem",
                             display: "flex",
                             justifyContent: "center"
                         },
@@ -248,18 +262,18 @@ function HomePage() {
                             children: "Copy Gift Address"
                         }, void 0, false, {
                             fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                            lineNumber: 125,
-                            columnNumber: 5
+                            lineNumber: 169,
+                            columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 118,
-                        columnNumber: 3
+                        lineNumber: 162,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                lineNumber: 46,
+                lineNumber: 103,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -269,54 +283,94 @@ function HomePage() {
                         children: "48 country Axies"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 141,
+                        lineNumber: 183,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "slider",
-                        "aria-label": "Country Axie horizontal slider",
-                        children: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map((country, index)=>{
-                            const tokenId = index + 1;
-                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "card",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                        src: (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["imageUrl"])(tokenId),
-                                        alt: `${country} Axie`
-                                    }, void 0, false, {
-                                        fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 147,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "id",
-                                        children: [
-                                            "#",
-                                            tokenId
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 148,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "name",
-                                        children: country
-                                    }, void 0, false, {
-                                        fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 149,
-                                        columnNumber: 17
-                                    }, this)
-                                ]
-                            }, country, true, {
+                        className: "sliderWrap",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                className: "sliderArrow left",
+                                type: "button",
+                                "aria-label": "Scroll left",
+                                onClick: ()=>scrollSlider(-340),
+                                children: "‹"
+                            }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                lineNumber: 146,
-                                columnNumber: 15
-                            }, this);
-                        })
-                    }, void 0, false, {
+                                lineNumber: 186,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                ref: sliderRef,
+                                className: "slider",
+                                "aria-label": "Country Axie horizontal slider",
+                                onPointerDown: onPointerDown,
+                                onPointerMove: onPointerMove,
+                                onPointerUp: stopDragging,
+                                onPointerCancel: stopDragging,
+                                onPointerLeave: ()=>{
+                                    isDragging.current = false;
+                                },
+                                children: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map((country, index)=>{
+                                    const tokenId = index + 1;
+                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "card",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                                src: (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["imageUrl"])(tokenId),
+                                                alt: `${country} Axie`,
+                                                draggable: false
+                                            }, void 0, false, {
+                                                fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                                lineNumber: 212,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "id",
+                                                children: [
+                                                    "#",
+                                                    tokenId
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                                lineNumber: 217,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "name",
+                                                children: country
+                                            }, void 0, false, {
+                                                fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                                lineNumber: 218,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, country, true, {
+                                        fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                        lineNumber: 211,
+                                        columnNumber: 17
+                                    }, this);
+                                })
+                            }, void 0, false, {
+                                fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                lineNumber: 195,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                className: "sliderArrow right",
+                                type: "button",
+                                "aria-label": "Scroll right",
+                                onClick: ()=>scrollSlider(340),
+                                children: "›"
+                            }, void 0, false, {
+                                fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
+                                lineNumber: 224,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 142,
+                        lineNumber: 185,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -331,18 +385,18 @@ function HomePage() {
                             children: "Check inventory"
                         }, void 0, false, {
                             fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                            lineNumber: 162,
-                            columnNumber: 3
+                            lineNumber: 241,
+                            columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 155,
-                        columnNumber: 5
+                        lineNumber: 234,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                lineNumber: 140,
+                lineNumber: 182,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -352,8 +406,8 @@ function HomePage() {
                         children: "How it works"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 170,
-                        columnNumber: 3
+                        lineNumber: 248,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid",
@@ -365,21 +419,21 @@ function HomePage() {
                                         children: "Gift an Axie"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 174,
-                                        columnNumber: 7
+                                        lineNumber: 252,
+                                        columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Your Axie is sent to the AxieWorldCup contract and released."
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 175,
-                                        columnNumber: 7
+                                        lineNumber: 253,
+                                        columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                lineNumber: 173,
-                                columnNumber: 5
+                                lineNumber: 251,
+                                columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "step",
@@ -388,21 +442,21 @@ function HomePage() {
                                         children: "Receive a Country"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 179,
-                                        columnNumber: 7
+                                        lineNumber: 257,
+                                        columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Ronin VRF randomly draws 1 of 48 World Cup country NFTs."
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 180,
-                                        columnNumber: 7
+                                        lineNumber: 258,
+                                        columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                lineNumber: 178,
-                                columnNumber: 5
+                                lineNumber: 256,
+                                columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "step",
@@ -411,42 +465,42 @@ function HomePage() {
                                         children: "Build Your Collection"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 184,
-                                        columnNumber: 7
+                                        lineNumber: 262,
+                                        columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Track your countries in Inventory. Marketplace support coming soon."
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                        lineNumber: 185,
-                                        columnNumber: 7
+                                        lineNumber: 263,
+                                        columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                                lineNumber: 183,
-                                columnNumber: 5
+                                lineNumber: 261,
+                                columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                        lineNumber: 172,
-                        columnNumber: 3
+                        lineNumber: 250,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-                lineNumber: 169,
+                lineNumber: 247,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/ronin-worldcup-axie/frontend/app/page.tsx",
-        lineNumber: 45,
+        lineNumber: 102,
         columnNumber: 5
     }, this);
 }
-_s(HomePage, "ztQTrGkz/JNdmyrGlufMQHGu5rM=");
+_s(HomePage, "UVG5xSwVpgWs/31DcOc274UQVG0=");
 _c = HomePage;
 var _c;
 __turbopack_context__.k.register(_c, "HomePage");

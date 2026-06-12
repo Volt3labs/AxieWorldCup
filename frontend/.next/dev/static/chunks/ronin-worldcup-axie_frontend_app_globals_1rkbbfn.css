@@ -102,7 +102,7 @@ main {
 .section {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 28px 32px;
+  padding: 24px 32px;
 }
 
 .section h2 {
@@ -202,6 +202,104 @@ footer {
   text-align: center;
   color: var(--muted);
   padding: 40px 32px;
+}
+
+.sliderWrap {
+  width: 100%;
+  position: relative;
+}
+
+.slider {
+  scroll-behavior: smooth;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  scrollbar-width: none;
+  gap: 1rem;
+  display: flex;
+  overflow-x: auto;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.slider:active {
+  cursor: grabbing;
+}
+
+.card {
+  flex: 0 0 220px;
+}
+
+.card img {
+  pointer-events: none;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sliderArrow {
+  z-index: 5;
+  cursor: pointer;
+  color: #fff;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: #ffffff1f;
+  border: 0;
+  border-radius: 999px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 34px;
+  line-height: 1;
+  display: grid;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sliderArrow.left {
+  left: .5rem;
+}
+
+.sliderArrow.right {
+  right: .5rem;
+}
+
+.sliderArrow:hover {
+  background: #fff3;
+}
+
+.inventoryCard {
+  position: relative;
+}
+
+.inventoryCard.locked {
+  opacity: .35;
+}
+
+.inventoryCard.locked .inventoryImage {
+  filter: grayscale() brightness(0);
+}
+
+.inventoryCard.owned .inventoryImage {
+  filter: none;
+}
+
+.inventoryImage {
+  transition: filter .2s, opacity .2s;
+}
+
+.lockOverlay {
+  opacity: .45;
+  pointer-events: none;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: 900;
+  display: grid;
+  position: absolute;
+  inset: 0;
 }
 
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/
