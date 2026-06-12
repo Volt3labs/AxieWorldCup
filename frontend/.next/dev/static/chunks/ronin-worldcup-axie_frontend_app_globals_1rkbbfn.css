@@ -302,4 +302,67 @@ footer {
   inset: 0;
 }
 
+.leaderboardTable {
+  border: 1px solid #ffffff1a;
+  border-radius: 20px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.leaderboardRow {
+  border-bottom: 1px solid #ffffff14;
+  grid-template-columns: 80px 1fr 140px 140px;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  display: grid;
+}
+
+.leaderboardRow:last-child {
+  border-bottom: 0;
+}
+
+.leaderboardRow.header {
+  opacity: .75;
+  background: #ffffff0d;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .leaderboardRow {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .leaderboardRow > div:nth-child(3), .leaderboardRow > div:nth-child(4) {
+    display: none;
+  }
+}
+
+.rewardGrid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  display: grid;
+}
+
+.rewardCard {
+  background: #ffffff0f;
+  border: 1px solid #ffffff1a;
+  border-radius: 20px;
+  padding: 1.25rem;
+}
+
+.rewardAmount {
+  margin-bottom: .75rem;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.rewardCard h3 {
+  margin-bottom: .5rem;
+}
+
+.rewardCard p {
+  opacity: .75;
+  line-height: 1.6;
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

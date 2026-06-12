@@ -132,3 +132,67 @@ footer { padding: 40px 32px; text-align:center; color: var(--muted); }
   opacity: 0.45;
   pointer-events: none;
 }
+
+.leaderboardTable {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboardRow {
+  display: grid;
+  grid-template-columns: 80px 1fr 140px 140px;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.leaderboardRow:last-child {
+  border-bottom: 0;
+}
+
+.leaderboardRow.header {
+  font-weight: 800;
+  opacity: 0.75;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 700px) {
+  .leaderboardRow {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .leaderboardRow > div:nth-child(3),
+  .leaderboardRow > div:nth-child(4) {
+    display: none;
+  }
+}
+
+.rewardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.rewardCard {
+  padding: 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rewardAmount {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 0.75rem;
+}
+
+.rewardCard h3 {
+  margin-bottom: 0.5rem;
+}
+
+.rewardCard p {
+  opacity: 0.75;
+  line-height: 1.6;
+}

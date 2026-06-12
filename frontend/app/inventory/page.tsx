@@ -1,7 +1,8 @@
 "use client";
 
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { countries, imageUrl } from "../lib/countries";
 import { COLLECTION_ADDRESS, ERC1155_ABI, RONIN_RPC } from "../lib/contracts";
 
@@ -12,44 +13,92 @@ export default function InventoryPage() {
   const [owned, setOwned] = useState<Owned[]>([]);
   const [status, setStatus] = useState("");
 
-  async function queryInventory() {
-    try {
-      if (!COLLECTION_ADDRESS) throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
-      if (!ethers.isAddress(address)) throw new Error("Invalid address");
+  const searchParams = useSearchParams();
 
-      setStatus("Querying balances...");
-      const provider = new ethers.JsonRpcProvider(RONIN_RPC);
-      const collection = new ethers.Contract(COLLECTION_ADDRESS, ERC1155_ABI, provider);
+  const queryInventory = useCallback(
+    async (forcedAddress?: string) => {
+      try {
+        if (!COLLECTION_ADDRESS) {
+          throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
+        }
 
-      const accounts = countries.map(() => address);
-      const ids = countries.map((_, i) => BigInt(i + 1));
-      const balances: bigint[] = await collection.balanceOfBatch(accounts, ids);
+        const targetAddress = forcedAddress || address;
 
-      const next = balances
-        .map((balance, i) => ({ tokenId: i + 1, country: countries[i], balance }))
-        .filter((item) => item.balance > 0n);
+        if (!ethers.isAddress(targetAddress)) {
+          throw new Error("Invalid address");
+        }
 
-      setOwned(next);
-      setStatus(next.length ? `Found ${next.length} country token type(s).` : "No country NFTs found for this address.");
-    } catch (err: any) {
-      setOwned([]);
-      setStatus(err?.message || "Query failed");
+        setStatus("Querying balances...");
+
+        const provider = new ethers.JsonRpcProvider(RONIN_RPC);
+        const collection = new ethers.Contract(
+          COLLECTION_ADDRESS,
+          ERC1155_ABI,
+          provider
+        );
+
+        const accounts = countries.map(() => targetAddress);
+        const ids = countries.map((_, i) => BigInt(i + 1));
+        const balances: bigint[] = await collection.balanceOfBatch(
+          accounts,
+          ids
+        );
+
+        const next = balances
+          .map((balance, i) => ({
+            tokenId: i + 1,
+            country: countries[i],
+            balance,
+          }))
+          .filter((item) => item.balance > 0n);
+
+        setOwned(next);
+        setStatus(
+          next.length
+            ? `Found ${next.length} country token type(s).`
+            : "No country NFTs found for this address."
+        );
+      } catch (err: any) {
+        setOwned([]);
+        setStatus(err?.message || "Query failed");
+      }
+    },
+    [address]
+  );
+
+  useEffect(() => {
+    const addr = searchParams.get("address");
+
+    if (addr && ethers.isAddress(addr)) {
+      setAddress(addr);
+      queryInventory(addr);
     }
-  }
+  }, [searchParams, queryInventory]);
 
   return (
     <main>
       <section className="hero">
         <h1>Inventory</h1>
-        <p>Enter any Ronin/EVM address to query the 48 ERC-1155 country balances directly from the contract.</p>
+        <p>
+          Enter any Ronin/EVM address to query the 48 ERC-1155 country balances
+          directly from the contract.
+        </p>
       </section>
 
       <section className="section">
         <div className="panel">
           <div className="inputRow">
-            <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="0x wallet address" />
-            <button className="button" onClick={queryInventory}>Query NFTs</button>
+            <input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="0x wallet address"
+            />
+
+            <button className="button" onClick={() => queryInventory()}>
+              Query NFTs
+            </button>
           </div>
+
           {status && <div className="status">{status}</div>}
         </div>
 
@@ -61,7 +110,9 @@ export default function InventoryPage() {
 
             return (
               <div
-                className={`card inventoryCard ${isOwned ? "owned" : "locked"}`}
+                className={`card inventoryCard ${
+                  isOwned ? "owned" : "locked"
+                }`}
                 key={tokenId}
               >
                 <img

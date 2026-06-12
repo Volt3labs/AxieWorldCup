@@ -60,6 +60,14 @@ function RootLayout({ children }) {
                                     fileName: "[project]/ronin-worldcup-axie/frontend/app/layout.tsx",
                                     lineNumber: 22,
                                     columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
+                                    href: "/leaderboard",
+                                    children: "Leaderboard"
+                                }, void 0, false, {
+                                    fileName: "[project]/ronin-worldcup-axie/frontend/app/layout.tsx",
+                                    lineNumber: 23,
+                                    columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
@@ -75,10 +83,20 @@ function RootLayout({ children }) {
                 }, this),
                 children,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
-                    children: "48 countries · ERC-1155 · Ronin"
-                }, void 0, false, {
+                    children: [
+                        "48 countries · ERC-1155 · ",
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            href: "https://volt3labs.com",
+                            children: "Volt3 Labs"
+                        }, void 0, false, {
+                            fileName: "[project]/ronin-worldcup-axie/frontend/app/layout.tsx",
+                            lineNumber: 27,
+                            columnNumber: 43
+                        }, this)
+                    ]
+                }, void 0, true, {
                     fileName: "[project]/ronin-worldcup-axie/frontend/app/layout.tsx",
-                    lineNumber: 26,
+                    lineNumber: 27,
                     columnNumber: 9
                 }, this)
             ]

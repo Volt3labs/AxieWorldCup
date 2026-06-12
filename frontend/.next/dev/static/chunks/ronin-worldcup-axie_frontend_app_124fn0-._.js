@@ -111,6 +111,7 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/node_modules/ethers/lib.esm/ethers.js [app-client] (ecmascript) <export * as ethers>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/app/lib/countries.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/app/lib/contracts.ts [app-client] (ecmascript)");
 ;
@@ -120,33 +121,64 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+;
 function InventoryPage() {
     _s();
     const [address, setAddress] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [owned, setOwned] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [status, setStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    async function queryInventory() {
-        try {
-            if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"]) throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
-            if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].isAddress(address)) throw new Error("Invalid address");
-            setStatus("Querying balances...");
-            const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RONIN_RPC"]);
-            const collection = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].Contract(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"], __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ERC1155_ABI"], provider);
-            const accounts = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map(()=>address);
-            const ids = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map((_, i)=>BigInt(i + 1));
-            const balances = await collection.balanceOfBatch(accounts, ids);
-            const next = balances.map((balance, i)=>({
-                    tokenId: i + 1,
-                    country: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"][i],
-                    balance
-                })).filter((item)=>item.balance > 0n);
-            setOwned(next);
-            setStatus(next.length ? `Found ${next.length} country token type(s).` : "No country NFTs found for this address.");
-        } catch (err) {
-            setOwned([]);
-            setStatus(err?.message || "Query failed");
+    const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"])();
+    const queryInventory = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "InventoryPage.useCallback[queryInventory]": async (forcedAddress)=>{
+            try {
+                if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"]) {
+                    throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
+                }
+                const targetAddress = forcedAddress || address;
+                if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].isAddress(targetAddress)) {
+                    throw new Error("Invalid address");
+                }
+                setStatus("Querying balances...");
+                const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RONIN_RPC"]);
+                const collection = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].Contract(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"], __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ERC1155_ABI"], provider);
+                const accounts = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map({
+                    "InventoryPage.useCallback[queryInventory].accounts": ()=>targetAddress
+                }["InventoryPage.useCallback[queryInventory].accounts"]);
+                const ids = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"].map({
+                    "InventoryPage.useCallback[queryInventory].ids": (_, i)=>BigInt(i + 1)
+                }["InventoryPage.useCallback[queryInventory].ids"]);
+                const balances = await collection.balanceOfBatch(accounts, ids);
+                const next = balances.map({
+                    "InventoryPage.useCallback[queryInventory].next": (balance, i)=>({
+                            tokenId: i + 1,
+                            country: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["countries"][i],
+                            balance
+                        })
+                }["InventoryPage.useCallback[queryInventory].next"]).filter({
+                    "InventoryPage.useCallback[queryInventory].next": (item)=>item.balance > 0n
+                }["InventoryPage.useCallback[queryInventory].next"]);
+                setOwned(next);
+                setStatus(next.length ? `Found ${next.length} country token type(s).` : "No country NFTs found for this address.");
+            } catch (err) {
+                setOwned([]);
+                setStatus(err?.message || "Query failed");
+            }
         }
-    }
+    }["InventoryPage.useCallback[queryInventory]"], [
+        address
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "InventoryPage.useEffect": ()=>{
+            const addr = searchParams.get("address");
+            if (addr && __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].isAddress(addr)) {
+                setAddress(addr);
+                queryInventory(addr);
+            }
+        }
+    }["InventoryPage.useEffect"], [
+        searchParams,
+        queryInventory
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -156,20 +188,20 @@ function InventoryPage() {
                         children: "Inventory"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                        lineNumber: 43,
+                        lineNumber: 81,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         children: "Enter any Ronin/EVM address to query the 48 ERC-1155 country balances directly from the contract."
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                        lineNumber: 44,
+                        lineNumber: 82,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                lineNumber: 42,
+                lineNumber: 80,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -187,22 +219,22 @@ function InventoryPage() {
                                         placeholder: "0x wallet address"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 50,
+                                        lineNumber: 91,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         className: "button",
-                                        onClick: queryInventory,
+                                        onClick: ()=>queryInventory(),
                                         children: "Query NFTs"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 51,
+                                        lineNumber: 97,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                lineNumber: 49,
+                                lineNumber: 90,
                                 columnNumber: 11
                             }, this),
                             status && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -210,13 +242,13 @@ function InventoryPage() {
                                 children: status
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                lineNumber: 53,
+                                lineNumber: 102,
                                 columnNumber: 22
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                        lineNumber: 48,
+                        lineNumber: 89,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -234,7 +266,7 @@ function InventoryPage() {
                                         className: "inventoryImage"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 67,
+                                        lineNumber: 118,
                                         columnNumber: 17
                                     }, this),
                                     !isOwned && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -242,7 +274,7 @@ function InventoryPage() {
                                         children: "?"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 73,
+                                        lineNumber: 124,
                                         columnNumber: 30
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -250,11 +282,11 @@ function InventoryPage() {
                                         children: [
                                             "#",
                                             tokenId,
-                                            isOwned && ` · Balance ${item.balance.toString()}`
+                                            item ? ` · Balance ${item.balance.toString()}` : ""
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 75,
+                                        lineNumber: 126,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -262,35 +294,39 @@ function InventoryPage() {
                                         children: country
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                        lineNumber: 80,
+                                        lineNumber: 131,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, tokenId, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                                lineNumber: 63,
+                                lineNumber: 112,
                                 columnNumber: 15
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                        lineNumber: 56,
+                        lineNumber: 105,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-                lineNumber: 47,
+                lineNumber: 88,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/ronin-worldcup-axie/frontend/app/inventory/page.tsx",
-        lineNumber: 41,
+        lineNumber: 79,
         columnNumber: 5
     }, this);
 }
-_s(InventoryPage, "ec9gEVUNms6gOjbClO4TAgH/6Vs=");
+_s(InventoryPage, "weutWXE2+ko8q3WXMlz+2NKmCOA=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"]
+    ];
+});
 _c = InventoryPage;
 var _c;
 __turbopack_context__.k.register(_c, "InventoryPage");
