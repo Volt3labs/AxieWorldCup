@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/valen/Downloads/ronin-worldcup-axie-with-nextapp/ronin-worldcup-axie/frontend/app/api/world-cup-winner/route.ts"],"sourcesContent":["export async function GET() {\r\n  const response = await fetch(\r\n    \"https://gamma-api.polymarket.com/events/slug/world-cup-winner\",\r\n    {\r\n      cache: \"no-store\",\r\n    }\r\n  );\r\n\r\n  const event = await response.json();\r\n\r\n  return Response.json(event, {\r\n    headers: {\r\n      \"Cache-Control\": \"no-store\",\r\n    },\r\n  });\r\n}"],"names":["GET","response","fetch","cache","event","json","Response","headers"],"mappings":";;;;AAAO,eAAeA;IACpB,MAAMC,WAAW,MAAMC,MACrB,iEACA;QACEC,OAAO;IACT;IAGF,MAAMC,QAAQ,MAAMH,SAASI,IAAI;IAEjC,OAAOC,SAASD,IAAI,CAACD,OAAO;QAC1BG,SAAS;YACP,iBAAiB;QACnB;IACF;AACF"}}]
+}

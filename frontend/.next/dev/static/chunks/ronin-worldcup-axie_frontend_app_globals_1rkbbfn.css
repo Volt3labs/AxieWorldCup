@@ -365,4 +365,157 @@ footer {
   line-height: 1.6;
 }
 
+.oddsGrid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  display: grid;
+}
+
+.oddsCard {
+  background: #ffffff0d;
+  border: 1px solid #ffffff14;
+  border-radius: 20px;
+  padding: 1rem;
+}
+
+.oddsRank {
+  opacity: .6;
+  margin-bottom: .5rem;
+  font-weight: 700;
+}
+
+.oddsImage {
+  object-fit: contain;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.oddsCountry {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.oddsProbability {
+  text-align: center;
+  margin: .5rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.oddsBar {
+  background: #ffffff1a;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.oddsBarFill {
+  background: #fff;
+  border-radius: 999px;
+  height: 100%;
+}
+
+.oddsTabs {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+.ownedOddsCard {
+  border: 3px solid gold;
+  animation: 2s ease-in-out infinite alternate ownedGlow;
+  position: relative;
+  transform: scale(1.04);
+  box-shadow: 0 0 10px #ffd700cc, 0 0 25px #ffd700b3, 0 0 50px #ffd70080;
+}
+
+@keyframes ownedGlow {
+  from {
+    box-shadow: 0 0 10px #ffd700b3, 0 0 25px #ffd70080, 0 0 40px #ffd7004d;
+  }
+
+  to {
+    box-shadow: 0 0 20px gold, 0 0 40px #ffd700cc, 0 0 80px #ffd70099;
+  }
+}
+
+.ownedBadge {
+  color: #000;
+  background: gold;
+  border-radius: 999px;
+  margin-top: .75rem;
+  padding: .6rem 1rem;
+  font-size: 1rem;
+  font-weight: 900;
+  display: inline-block;
+}
+
+.ownedOddsCard .oddsImage {
+  transform: scale(1.12);
+}
+
+.ownedRibbon {
+  color: #111;
+  z-index: 20;
+  background: radial-gradient(circle at 30% 30%, #fff6bf, gold 45%, #d89b00 100%);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  display: flex;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  transform: rotate(12deg);
+  box-shadow: 0 0 12px #ffd700e6, 0 0 30px #ffd700b3;
+}
+
+.marketBanner {
+  background: #ffffff0d;
+  border: 1px solid #ffffff14;
+  border-radius: 20px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+}
+
+.marketTitle {
+  margin-bottom: .25rem;
+  font-weight: 800;
+}
+
+.marketDescription {
+  opacity: .75;
+  font-size: .9rem;
+}
+
+.marketLink {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+
+.marketLink a {
+  opacity: .8;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .marketBanner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { countries, imageUrl } from "../lib/countries";
 import { COLLECTION_ADDRESS, ERC1155_ABI, RONIN_RPC } from "../lib/contracts";
+import Link from "next/link";
 
 type Owned = { tokenId: number; country: string; balance: bigint };
 
@@ -100,6 +101,15 @@ export default function InventoryContent() {
           </div>
 
           {status && <div className="status">{status}</div>}
+          {address && ethers.isAddress(address) && (
+          <Link
+            className="button secondary"
+            href={`/odds?address=${address}`}
+            style={{ marginTop: "1rem", display: "inline-flex" }}
+          >
+            Check odds for this wallet !
+          </Link>
+        )}
         </div>
 
         <div className="inventoryGrid">

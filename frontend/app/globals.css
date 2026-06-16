@@ -196,3 +196,187 @@ footer { padding: 40px 32px; text-align:center; color: var(--muted); }
   opacity: 0.75;
   line-height: 1.6;
 }
+
+.oddsGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(220px, 1fr)
+  );
+  gap: 1rem;
+}
+
+.oddsCard {
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.oddsRank {
+  opacity: .6;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.oddsImage {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.oddsCountry {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.oddsProbability {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin: .5rem 0 1rem;
+}
+
+.oddsBar {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255,255,255,.1);
+}
+
+.oddsBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: white;
+}
+
+.oddsTabs {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.ownedOddsCard {
+  position: relative;
+  transform: scale(1.04);
+  border: 3px solid #ffd700;
+  box-shadow:
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 25px rgba(255, 215, 0, 0.7),
+    0 0 50px rgba(255, 215, 0, 0.5);
+  animation: ownedGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes ownedGlow {
+  from {
+    box-shadow:
+      0 0 10px rgba(255, 215, 0, 0.7),
+      0 0 25px rgba(255, 215, 0, 0.5),
+      0 0 40px rgba(255, 215, 0, 0.3);
+  }
+
+  to {
+    box-shadow:
+      0 0 20px rgba(255, 215, 0, 1),
+      0 0 40px rgba(255, 215, 0, 0.8),
+      0 0 80px rgba(255, 215, 0, 0.6);
+  }
+}
+
+
+.ownedBadge {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 900;
+  background: #ffd700;
+  color: #000;
+  display: inline-block;
+}
+
+.ownedOddsCard .oddsImage {
+  transform: scale(1.12);
+}
+
+.ownedRibbon {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+
+  width: 60px;
+  height: 60px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.1rem;
+  font-weight: 900;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    #fff6bf,
+    #ffd700 45%,
+    #d89b00 100%
+  );
+
+  color: #111;
+
+  border: 3px solid white;
+
+  box-shadow:
+    0 0 12px rgba(255,215,0,.9),
+    0 0 30px rgba(255,215,0,.7);
+
+  transform: rotate(12deg);
+  z-index: 20;
+}
+
+.marketBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 1.25rem;
+
+  border-radius: 20px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.marketTitle {
+  font-weight: 800;
+  margin-bottom: .25rem;
+}
+
+.marketDescription {
+  opacity: .75;
+  font-size: .9rem;
+}
+
+.marketLink {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+
+.marketLink a {
+  opacity: .8;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .marketBanner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
