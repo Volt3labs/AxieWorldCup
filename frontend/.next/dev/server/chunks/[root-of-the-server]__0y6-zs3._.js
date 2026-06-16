@@ -155,17 +155,34 @@ const CHAIN_ID = Number(("TURBOPACK compile-time value", "2020") || "2020");
 
 __turbopack_context__.s([
     "GET",
-    ()=>GET
+    ()=>GET,
+    "dynamic",
+    ()=>dynamic
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/node_modules/ethers/lib.esm/ethers.js [app-route] (ecmascript) <export * as ethers>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ronin-worldcup-axie/frontend/app/lib/contracts.ts [app-route] (ecmascript)");
+const dynamic = "force-dynamic";
 ;
 ;
 const COUNTRY_COUNT = 48;
+const DEPLOYMENT_BLOCK = 56865900;
 const TRANSFER_SINGLE_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferSingle(address,address,address,uint256,uint256)");
 const TRANSFER_BATCH_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferBatch(address,address,address,uint256[],uint256[])");
 function topicToAddress(topic) {
     return __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].getAddress(`0x${topic.slice(26)}`);
+}
+async function getLogsChunked(provider, filter, fromBlock, toBlock, chunkSize = 90000) {
+    const logs = [];
+    for(let start = fromBlock; start <= toBlock; start += chunkSize){
+        const end = Math.min(start + chunkSize - 1, toBlock);
+        const chunkLogs = await provider.getLogs({
+            ...filter,
+            fromBlock: start,
+            toBlock: end
+        });
+        logs.push(...chunkLogs);
+    }
+    return logs;
 }
 async function GET() {
     try {
@@ -178,20 +195,15 @@ async function GET() {
         }
         const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["RONIN_RPC"]);
         const currentBlock = await provider.getBlockNumber();
-        /**
-     * Best: replace this with your collection deployment block.
-     */ const fromBlock = Math.max(0, currentBlock - 500_000);
-        const logs = await provider.getLogs({
+        const logs = await getLogsChunked(provider, {
             address: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"],
-            fromBlock,
-            toBlock: currentBlock,
             topics: [
                 [
                     TRANSFER_SINGLE_TOPIC,
                     TRANSFER_BATCH_TOPIC
                 ]
             ]
-        });
+        }, DEPLOYMENT_BLOCK, currentBlock);
         const minted = {};
         const balances = {};
         for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
@@ -199,18 +211,16 @@ async function GET() {
             balances[tokenId] = new Map();
         }
         function addBalance(owner, tokenId, amount) {
-            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
             if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
+            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
             const key = owner.toLowerCase();
-            const current = balances[tokenId].get(key) || 0n;
-            balances[tokenId].set(key, current + amount);
+            balances[tokenId].set(key, (balances[tokenId].get(key) || 0n) + amount);
         }
         function subBalance(owner, tokenId, amount) {
-            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
             if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
+            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
             const key = owner.toLowerCase();
-            const current = balances[tokenId].get(key) || 0n;
-            balances[tokenId].set(key, current - amount);
+            balances[tokenId].set(key, (balances[tokenId].get(key) || 0n) - amount);
         }
         for (const log of logs){
             if (log.topics[0] === TRANSFER_SINGLE_TOPIC) {
@@ -222,8 +232,8 @@ async function GET() {
                 ], log.data);
                 const tokenId = Number(id);
                 const amount = BigInt(value.toString());
-                if (from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
-                    minted[tokenId] = (minted[tokenId] || 0n) + amount;
+                if (tokenId >= 1 && tokenId <= COUNTRY_COUNT && from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
+                    minted[tokenId] += amount;
                 }
                 subBalance(from, tokenId, amount);
                 addBalance(to, tokenId, amount);
@@ -238,8 +248,8 @@ async function GET() {
                 ids.forEach((id, index)=>{
                     const tokenId = Number(id);
                     const amount = BigInt(values[index].toString());
-                    if (from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
-                        minted[tokenId] = (minted[tokenId] || 0n) + amount;
+                    if (tokenId >= 1 && tokenId <= COUNTRY_COUNT && from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
+                        minted[tokenId] += amount;
                     }
                     subBalance(from, tokenId, amount);
                     addBalance(to, tokenId, amount);
@@ -248,18 +258,19 @@ async function GET() {
         }
         const stats = {};
         for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
-            const ownerCount = Array.from(balances[tokenId].values()).filter((balance)=>balance > 0n).length;
+            const owners = Array.from(balances[tokenId].values()).filter((balance)=>balance > 0n).length;
             stats[tokenId] = {
-                minted: Number(minted[tokenId] || 0n),
-                owners: ownerCount
+                minted: Number(minted[tokenId]),
+                owners
             };
         }
         return Response.json(stats, {
             headers: {
-                "Cache-Control": "s-maxage=60, stale-while-revalidate=300"
+                "Cache-Control": "s-maxage=300, stale-while-revalidate=3600"
             }
         });
     } catch (err) {
+        console.error(err);
         return Response.json({
             error: err?.message || "Failed to load stats"
         }, {
