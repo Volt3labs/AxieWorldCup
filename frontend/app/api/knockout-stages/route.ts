@@ -1,6 +1,6 @@
 export async function GET() {
   const response = await fetch(
-    "https://gamma-api.polymarket.com/events/slug/world-cup-nation-of-top-goalscorer",
+    "https://gamma-api.polymarket.com/events/slug/world-cup-team-to-advance-to-knockout-stages",
     {
       cache: "no-store",
     }

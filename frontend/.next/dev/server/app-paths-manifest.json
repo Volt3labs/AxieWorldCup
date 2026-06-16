@@ -1,6 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/odds/route": "app/api/odds/route.js",
+  "/api/knockout-stages/route": "app/api/knockout-stages/route.js",
+  "/api/stats/route": "app/api/stats/route.js",
   "/api/top-goalscorer-country/route": "app/api/top-goalscorer-country/route.js",
   "/api/top-scoring-nation/route": "app/api/top-scoring-nation/route.js",
   "/api/world-cup-winner/route": "app/api/world-cup-winner/route.js",

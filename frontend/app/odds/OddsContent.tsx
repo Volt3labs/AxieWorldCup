@@ -11,6 +11,12 @@ type CountryOdd = {
   probability: number;
 };
 
+type TokenStats = {
+  minted: number;
+  owners: number;
+};
+
+
 const COUNTRY_ALIASES: Record<string, string> = {
   "Cape Verde": "Cabo Verde",
   "Bosnia-Herzegovina": "Bosnia and Herzegovina",
@@ -33,20 +39,19 @@ const EVENT_LINKS = {
 
 
 
-function normalizeCountryName(country: string) {
-  return COUNTRY_ALIASES[country] || country;
+function normalizeCountry(country: string) {
+  return (COUNTRY_ALIASES[country] || country)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 }
 
 function getCountryTokenId(country: string) {
-  const normalizedCountry = normalizeCountryName(country);
+  const normalizedCountry = normalizeCountry(country);
 
   const index = countries.findIndex(
-    (c) =>
-      c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") ===
-      normalizedCountry
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+    (c) => normalizeCountry(c) === normalizedCountry
   );
 
   return index >= 0 ? index + 1 : null;
@@ -70,6 +75,7 @@ export default function OddsContent() {
     const [address, setAddress] = useState("");
     const [ownedBalances, setOwnedBalances] = useState<Record<number, bigint>>({});
     const [inventoryStatus, setInventoryStatus] = useState("");
+    const [tokenStats, setTokenStats] = useState<Record<number, TokenStats>>({});
 
     useEffect(() => {
   const addr = searchParams.get("address");
@@ -79,6 +85,12 @@ export default function OddsContent() {
     queryOwnedOdds(addr);
   }
 }, [searchParams]);
+
+useEffect(() => {
+  fetch("/api/stats")
+    .then((r) => r.json())
+    .then(setTokenStats);
+}, []);
 
 useEffect(() => {
   async function loadWinnerOdds() {
@@ -132,7 +144,7 @@ useEffect(() => {
 useEffect(() => {
   async function loadTopScorerCountry() {
     try {
-      const res = await fetch("/api/top-goalscorer-country", {
+      const res = await fetch("/api/knockout-stages", {
         cache: "no-store",
       });
 
@@ -335,7 +347,7 @@ async function queryOwnedOdds(forcedAddress?: string) {
                 className={`button ${tab === "topScorer" ? "" : "secondary"}`}
                 onClick={() => setTab("topScorer")}
             >
-                Top Scorer Country
+                Knockout stages
             </button>
             <button
   className={`button ${
@@ -369,10 +381,12 @@ async function queryOwnedOdds(forcedAddress?: string) {
 </div>
 
         <div className="oddsGrid">
-          {activeRows.map((row, index) => {
-                const tokenId = getCountryTokenId(row.country);
-                const ownedBalance = tokenId ? ownedBalances[tokenId] : undefined;
-                const isOwned = Boolean(ownedBalance);
+          {activeRows
+            .filter((row) => getCountryTokenId(row.country) !== null)
+            .map((row, index) => {
+                const tokenId = getCountryTokenId(row.country)!;
+                const ownedBalance = ownedBalances[tokenId] ?? 0n;
+                const isOwned = ownedBalance > 0n;
 
             return (
               <div
@@ -391,12 +405,20 @@ async function queryOwnedOdds(forcedAddress?: string) {
                   />
                 )}
 
+                {tokenId && (
+                <div className="tokenStats">
+                    Minted {tokenStats[tokenId]?.minted ?? "-"} |
+                    {" "}
+                    Owners {tokenStats[tokenId]?.owners ?? "-"}
+                </div>
+                )}
+
                 <div className="oddsCountry">
                   {row.country}
                 </div>
 
                 <div className="oddsProbability">
-                {row.probability.toFixed(2)}%
+                {row.probability.toFixed(2)}% chances
                 </div>
 
                 {isOwned && (

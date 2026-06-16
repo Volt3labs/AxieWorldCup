@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/valen/Downloads/ronin-worldcup-axie-with-nextapp/ronin-worldcup-axie/frontend/app/api/knockout-stages/route.ts"],"sourcesContent":["export async function GET() {\r\n  const response = await fetch(\r\n    \"https://gamma-api.polymarket.com/events/slug/world-cup-team-to-advance-to-knockout-stages\",\r\n    {\r\n      cache: \"no-store\",\r\n    }\r\n  );\r\n\r\n  if (!response.ok) {\r\n    return Response.json(\r\n      { error: \"Failed to fetch Polymarket data\" },\r\n      { status: 500 }\r\n    );\r\n  }\r\n\r\n  const event = await response.json();\r\n\r\n  return Response.json(event, {\r\n    headers: {\r\n      \"Cache-Control\": \"no-store\",\r\n    },\r\n  });\r\n}"],"names":["GET","response","fetch","cache","ok","Response","json","error","status","event","headers"],"mappings":";;;;AAAO,eAAeA;IACpB,MAAMC,WAAW,MAAMC,MACrB,6FACA;QACEC,OAAO;IACT;IAGF,IAAI,CAACF,SAASG,EAAE,EAAE;QAChB,OAAOC,SAASC,IAAI,CAClB;YAAEC,OAAO;QAAkC,GAC3C;YAAEC,QAAQ;QAAI;IAElB;IAEA,MAAMC,QAAQ,MAAMR,SAASK,IAAI;IAEjC,OAAOD,SAASC,IAAI,CAACG,OAAO;QAC1BC,SAAS;YACP,iBAAiB;QACnB;IACF;AACF"}}]
+}

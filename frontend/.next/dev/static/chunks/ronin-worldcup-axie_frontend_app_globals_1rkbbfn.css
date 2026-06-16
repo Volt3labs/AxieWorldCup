@@ -518,4 +518,12 @@ footer {
   }
 }
 
+.tokenStats {
+  opacity: .75;
+  text-align: center;
+  margin: .5rem 0;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

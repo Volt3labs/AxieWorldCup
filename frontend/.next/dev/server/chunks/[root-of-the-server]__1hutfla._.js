@@ -35,32 +35,10 @@ const mod = __turbopack_context__.x("next/dist/shared/lib/no-fallback-error.exte
 
 module.exports = mod;
 }),
-"[project]/ronin-worldcup-axie/frontend/app/api/top-goalscorer-country/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
-"use strict";
+"[project]/ronin-worldcup-axie/frontend/app/api/top-goalscorer-country/route.ts [app-route] (ecmascript)", ((__turbopack_context__, module, exports) => {
 
-__turbopack_context__.s([
-    "GET",
-    ()=>GET
-]);
-async function GET() {
-    const response = await fetch("https://gamma-api.polymarket.com/events/slug/world-cup-nation-of-top-goalscorer", {
-        cache: "no-store"
-    });
-    if (!response.ok) {
-        return Response.json({
-            error: "Failed to fetch Polymarket data"
-        }, {
-            status: 500
-        });
-    }
-    const event = await response.json();
-    return Response.json(event, {
-        headers: {
-            "Cache-Control": "no-store"
-        }
-    });
-}
+const e = new Error("Could not parse module '[project]/ronin-worldcup-axie/frontend/app/api/top-goalscorer-country/route.ts', file not found");
+e.code = 'MODULE_UNPARSABLE';
+throw e;
 }),
 ];
-
-//# sourceMappingURL=%5Broot-of-the-server%5D__1hutfla._.js.map

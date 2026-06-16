@@ -51,9 +51,10 @@ const REWARDS = [
     description: "Shared between holders of the country that scores the most goals.",
   },
   {
-    title: "Golden Ball Country",
+    title: "Knockout Stage Countries",
     amount: "25 AXS",
-    description: "Shared between holders of the Golden Ball winner's country.",
+    description:
+      "Shared between holders of countries that reach the knockout stage (Round of 32)."
   },
   {
     title: "Full Collection",
