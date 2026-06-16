@@ -45,7 +45,7 @@ const REWARDS = [
     description: "Shared between holders of the country that scores the most goals.",
   },
   {
-    title: "Knockout Stage Countries",
+    title: "Knockout Stage",
     amount: "25 AXS",
     description:
       "Shared between holders of countries that reach the knockout stage (Round of 32)."
