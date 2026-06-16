@@ -31,13 +31,7 @@ const TRANSFER_BATCH_TOPIC = ethers.id(
   "TransferBatch(address,address,address,uint256[],uint256[])"
 );
 
-const COUNTRY_MINTED_TOPIC = ethers.id(
-  "CountryMinted(address,uint256,uint256,uint256)"
-);
 
-const COLLECTION_EVENTS_ABI = [
-  "event CountryMinted(address indexed minter, uint256 indexed countryId, uint256 indexed axieTokenId, uint256 requestId)",
-];
 
 const REWARDS = [
   {
@@ -63,10 +57,33 @@ const REWARDS = [
   },
 ];
 
-const collectionInterface = new ethers.Interface(COLLECTION_EVENTS_ABI);
 
 function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+async function getLogsChunked(
+  provider: ethers.JsonRpcProvider,
+  filter: ethers.Filter,
+  fromBlock: number,
+  toBlock: number,
+  chunkSize = 90_000
+) {
+  const logs: ethers.Log[] = [];
+
+  for (let start = fromBlock; start <= toBlock; start += chunkSize) {
+    const end = Math.min(start + chunkSize - 1, toBlock);
+
+    const chunkLogs = await provider.getLogs({
+      ...filter,
+      fromBlock: start,
+      toBlock: end,
+    });
+
+    logs.push(...chunkLogs);
+  }
+
+  return logs;
 }
 
 export default function LeaderboardPage() {
@@ -91,12 +108,15 @@ export default function LeaderboardPage() {
        */
       const fromBlock = Math.max(0, currentBlock - 250_000);
 
-      const transferLogs = await provider.getLogs({
-        address: COLLECTION_ADDRESS,
+      const transferLogs = await getLogsChunked(
+        provider,
+        {
+          address: COLLECTION_ADDRESS,
+          topics: [[TRANSFER_SINGLE_TOPIC, TRANSFER_BATCH_TOPIC]],
+        },
         fromBlock,
-        toBlock: currentBlock,
-        topics: [[TRANSFER_SINGLE_TOPIC, TRANSFER_BATCH_TOPIC]],
-      });
+        currentBlock
+      );
 
       const balances = new Map<string, Map<number, bigint>>();
 
@@ -192,16 +212,19 @@ export default function LeaderboardPage() {
 
       setCollectors(ranked);
 
-      const mintLogs = await provider.getLogs({
-  address: COLLECTION_ADDRESS,
-  fromBlock,
-  toBlock: currentBlock,
-  topics: [
-    TRANSFER_SINGLE_TOPIC,
-    null,
-    ethers.zeroPadValue(ethers.ZeroAddress, 32),
-  ],
-});
+    const mintLogs = await getLogsChunked(
+      provider,
+      {
+        address: COLLECTION_ADDRESS,
+        topics: [
+          TRANSFER_SINGLE_TOPIC,
+          null,
+          ethers.zeroPadValue(ethers.ZeroAddress, 32),
+        ],
+      },
+      fromBlock,
+      currentBlock
+    );
 
 const parsedMints: LatestMint[] = mintLogs
   .slice(-5)
@@ -314,10 +337,6 @@ const parsedMints: LatestMint[] = mintLogs
                 src={imageUrl(mint.countryId)}
                 alt={`${mint.country} Axie`}
               />
-
-              <div className="id">
-                #{mint.countryId} · Axie #{mint.axieTokenId}
-              </div>
 
               <div className="id">#{mint.countryId}</div>
                 <div className="name">{mint.country}</div>
