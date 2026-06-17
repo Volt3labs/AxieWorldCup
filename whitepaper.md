@@ -1,5 +1,8 @@
 # Axie World Cup
 
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/9ecbc451-489f-4fd3-952b-c0ac3fc6ba2f" />
+
+
 ## What Is Axie World Cup?
 
 Axie World Cup is an open-source community experiment built independently of Sky Mavis.
