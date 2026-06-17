@@ -2,7 +2,7 @@
 
 import { ethers } from "ethers";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { countries, imageUrl } from "./lib/countries";
 import {
   AXIE_ABI,
@@ -17,6 +17,8 @@ declare global {
   }
 }
 
+const MINT_CLOSE_TIME = new Date("2026-07-19T19:00:00Z").getTime();
+
 export default function HomePage() {
   const [axieId, setAxieId] = useState("");
   const [status, setStatus] = useState("");
@@ -25,6 +27,33 @@ export default function HomePage() {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    function updateTimer() {
+      const now = Date.now();
+      const distance = MINT_CLOSE_TIME - now;
+
+      if (distance <= 0) {
+        setTimeLeft("Mint closed");
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (distance / (1000 * 60 * 60)) % 24
+      );
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+    }
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 60_000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   function scrollSlider(amount: number) {
     sliderRef.current?.scrollBy({
@@ -133,11 +162,13 @@ export default function HomePage() {
             opacity: 0.85,
           }}
         >
-          Send any Axie to the Axie World Cup contract and receive a randomly
-          assigned World Cup Country NFT. Your Axie is permanently forwarded to
-          the release wallet, while Ronin VRF ensures every country draw is
-          provably fair and completely random.
+
+Every gifted Axie is released, and every country draw is powered by Ronin VRF. Collect the world's best teams, complete the 48-country set, and get access to 150 AXS in tournament rewards.
+
+Open-source, non-profit, community-built. Independent from Sky Mavis.
         </p>
+
+        
 
         <div
           style={{
@@ -176,6 +207,9 @@ export default function HomePage() {
           >
             Copy Gift Address
           </button>
+        </div>
+        <div className="mintTimer">
+          Mint closes in <strong>{timeLeft} - 19th July 19:00 GMT</strong>
         </div>
       </section>
 

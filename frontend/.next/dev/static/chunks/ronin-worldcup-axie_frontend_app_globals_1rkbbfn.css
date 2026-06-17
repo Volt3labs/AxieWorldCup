@@ -541,4 +541,15 @@ footer {
   font-size: .9rem;
 }
 
+.mintTimer {
+  opacity: .75;
+  margin-top: 1.5rem;
+  font-size: .9rem;
+}
+
+.mintTimer strong {
+  opacity: 1;
+  font-weight: 900;
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/
