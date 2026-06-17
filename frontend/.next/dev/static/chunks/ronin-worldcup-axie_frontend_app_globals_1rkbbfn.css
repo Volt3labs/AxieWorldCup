@@ -526,4 +526,19 @@ footer {
   font-weight: 600;
 }
 
+.rewardSnapshot {
+  opacity: .7;
+  border-top: 1px solid #ffffff1a;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  font-size: .85rem;
+}
+
+.rewardFootnote {
+  text-align: center;
+  opacity: .75;
+  margin-top: 1.5rem;
+  font-size: .9rem;
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

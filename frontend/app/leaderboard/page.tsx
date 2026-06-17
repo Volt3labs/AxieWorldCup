@@ -37,23 +37,34 @@ const REWARDS = [
   {
     title: "Winning Country",
     amount: "50 AXS",
-    description: "Shared between holders of the country that wins the World Cup.",
+    description:
+      "Shared between holders of the country that wins the World Cup.",
+    snapshot:
+      "Snapshot: 19 Jul 2026, 19:00 GMT (kickoff of the World Cup Final)",
   },
   {
     title: "Top Scoring Country",
     amount: "25 AXS",
-    description: "Shared between holders of the country that scores the most goals.",
+    description:
+      "Shared between holders of the country that scores the most goals.",
+    snapshot:
+      "Snapshot: 19 Jul 2026, 19:00 GMT (kickoff of the World Cup Final)",
   },
   {
     title: "Knockout Stage",
     amount: "25 AXS",
     description:
-      "Shared between holders of countries that reach the knockout stage (Round of 32)."
+      "Shared between holders of countries that reach the Round of 32.",
+    snapshot:
+      "Snapshot: 28 Jun 2026, ~04:00 GMT (completion of the group stage)",
   },
   {
     title: "Full Collection",
     amount: "50 AXS",
-    description: "Shared between wallets holding all 48 country NFTs.",
+    description:
+      "Shared between wallets holding all 48 country NFTs. Respect !       ",
+    snapshot:
+      "Snapshot: 20 Jul 2026, 19:00 GMT (24 hours after the World Cup Final begins)",
   },
 ];
 
@@ -275,14 +286,23 @@ const parsedMints: LatestMint[] = mintLogs
   <h2>Reward Pools</h2>
 
   <div className="rewardGrid">
-    {REWARDS.map((reward) => (
-      <div className="rewardCard" key={reward.title}>
-        <div className="rewardAmount">{reward.amount}</div>
-        <h3>{reward.title}</h3>
-        <p>{reward.description}</p>
+  {REWARDS.map((reward) => (
+    <div className="rewardCard" key={reward.title}>
+      <div className="rewardAmount">{reward.amount}</div>
+
+      <h3>{reward.title}</h3>
+
+      <p>{reward.description}</p>
+
+      <div className="rewardSnapshot">
+        {reward.snapshot}
       </div>
-    ))}
-  </div>
+    </div>
+  ))}
+</div>
+<div className="rewardFootnote">
+  * 1 NFT = 1 share. Rewards are distributed proportionally based on the number of eligible NFTs held at the snapshot time.
+</div>
 </section>
 
       <section className="section">
