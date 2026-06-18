@@ -7,16 +7,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "bootstrap:index": "tsx app/scripts/bootstrap-index.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@rainbow-me/rainbowkit": "latest",
     "@tanstack/react-query": "latest",
     "@vercel/kv": "^3.0.0",
+    "dotenv": "^17.4.2",
     "ethers": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "tsx": "^4.22.4",
     "viem": "latest",
     "wagmi": "latest"
   },
