@@ -87,9 +87,25 @@ export default function OddsContent() {
 }, [searchParams]);
 
 useEffect(() => {
-  fetch("/api/stats")
-    .then((r) => r.json())
-    .then(setTokenStats);
+  async function loadStats() {
+    try {
+      const res = await fetch("/api/stats", {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to load stats");
+      }
+
+      setTokenStats(data.stats || {});
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  loadStats();
 }, []);
 
 useEffect(() => {

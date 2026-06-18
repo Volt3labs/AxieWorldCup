@@ -243,7 +243,21 @@ function OddsContent() {
         searchParams
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        fetch("/api/stats").then((r)=>r.json()).then(setTokenStats);
+        async function loadStats() {
+            try {
+                const res = await fetch("/api/stats", {
+                    cache: "no-store"
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to load stats");
+                }
+                setTokenStats(data.stats || {});
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadStats();
     }, []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         async function loadWinnerOdds() {
@@ -379,20 +393,20 @@ function OddsContent() {
                         children: "World Cup Live Odds"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 305,
+                        lineNumber: 321,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         children: "Live probabilities from Polymarket."
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 307,
+                        lineNumber: 323,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                lineNumber: 304,
+                lineNumber: 320,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -403,7 +417,7 @@ function OddsContent() {
                         children: status
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 313,
+                        lineNumber: 329,
                         columnNumber: 20
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -421,7 +435,7 @@ function OddsContent() {
                                         placeholder: "0x wallet address"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 317,
+                                        lineNumber: 333,
                                         columnNumber: 5
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -430,13 +444,13 @@ function OddsContent() {
                                         children: "Highlight owned"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 323,
+                                        lineNumber: 339,
                                         columnNumber: 5
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 316,
+                                lineNumber: 332,
                                 columnNumber: 3
                             }, this),
                             inventoryStatus && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -444,13 +458,13 @@ function OddsContent() {
                                 children: inventoryStatus
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 332,
+                                lineNumber: 348,
                                 columnNumber: 5
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 315,
+                        lineNumber: 331,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -462,7 +476,7 @@ function OddsContent() {
                                 children: "Win World Cup"
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 339,
+                                lineNumber: 355,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -471,7 +485,7 @@ function OddsContent() {
                                 children: "Knockout stages"
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 346,
+                                lineNumber: 362,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -480,13 +494,13 @@ function OddsContent() {
                                 children: "Most Goals Scored"
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 352,
+                                lineNumber: 368,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 338,
+                        lineNumber: 354,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -499,7 +513,7 @@ function OddsContent() {
                                         children: "Prediction Market"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 363,
+                                        lineNumber: 379,
                                         columnNumber: 5
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -507,13 +521,13 @@ function OddsContent() {
                                         children: "Odds are sourced from Polymarket and update as traders buy and sell positions."
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 367,
+                                        lineNumber: 383,
                                         columnNumber: 5
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 362,
+                                lineNumber: 378,
                                 columnNumber: 3
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -524,13 +538,13 @@ function OddsContent() {
                                 children: "Open Polymarket ↗"
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 373,
+                                lineNumber: 389,
                                 columnNumber: 3
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 361,
+                        lineNumber: 377,
                         columnNumber: 1
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -550,7 +564,7 @@ function OddsContent() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 396,
+                                        lineNumber: 412,
                                         columnNumber: 17
                                     }, this),
                                     tokenId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -559,7 +573,7 @@ function OddsContent() {
                                         alt: row.country
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 401,
+                                        lineNumber: 417,
                                         columnNumber: 19
                                     }, this),
                                     tokenId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -574,7 +588,7 @@ function OddsContent() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 409,
+                                        lineNumber: 425,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -582,7 +596,7 @@ function OddsContent() {
                                         children: row.country
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 416,
+                                        lineNumber: 432,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -593,7 +607,7 @@ function OddsContent() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 420,
+                                        lineNumber: 436,
                                         columnNumber: 17
                                     }, this),
                                     isOwned && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -604,7 +618,7 @@ function OddsContent() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 425,
+                                        lineNumber: 441,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -616,36 +630,36 @@ function OddsContent() {
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                            lineNumber: 432,
+                                            lineNumber: 448,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                        lineNumber: 431,
+                                        lineNumber: 447,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, row.country, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                                lineNumber: 392,
+                                lineNumber: 408,
                                 columnNumber: 15
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                        lineNumber: 383,
+                        lineNumber: 399,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-                lineNumber: 312,
+                lineNumber: 328,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/ronin-worldcup-axie/frontend/app/odds/OddsContent.tsx",
-        lineNumber: 303,
+        lineNumber: 319,
         columnNumber: 5
     }, this);
 }

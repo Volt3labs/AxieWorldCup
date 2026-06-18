@@ -73,9 +73,13 @@ export default function LeaderboardPage() {
       const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
       const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
 
-      setStatus(
-        `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`
-      );
+      const isFullySynced = data.isFullySynced === true;
+
+    setStatus(
+      isFullySynced
+        ? `Fully synced at block ${lastIndexedBlock.toLocaleString()}`
+        : `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`
+    );
     } catch (err: any) {
       setStatus(err?.message || "Failed to load leaderboard");
     }

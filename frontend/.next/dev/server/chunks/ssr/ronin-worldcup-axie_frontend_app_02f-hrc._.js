@@ -126,7 +126,8 @@ function LeaderboardPage() {
             setLatestMints(Array.isArray(data.latestMints) ? data.latestMints : []);
             const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
             const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
-            setStatus(`Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`);
+            const isFullySynced = data.isFullySynced === true;
+            setStatus(isFullySynced ? `Fully synced at block ${lastIndexedBlock.toLocaleString()}` : `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`);
         } catch (err) {
             setStatus(err?.message || "Failed to load leaderboard");
         }
@@ -143,20 +144,20 @@ function LeaderboardPage() {
                         children: "Leaderboard"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 91,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         children: "Top collectors by unique countries owned, plus the 5 latest country mints."
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 92,
+                        lineNumber: 96,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                lineNumber: 90,
+                lineNumber: 94,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -166,7 +167,7 @@ function LeaderboardPage() {
                         children: "Reward Pools"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 99,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -179,21 +180,21 @@ function LeaderboardPage() {
                                         children: reward.amount
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 104,
+                                        lineNumber: 108,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                         children: reward.title
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 109,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: reward.description
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 110,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -201,18 +202,18 @@ function LeaderboardPage() {
                                         children: reward.snapshot
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 107,
+                                        lineNumber: 111,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, reward.title, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                lineNumber: 103,
+                                lineNumber: 107,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 101,
+                        lineNumber: 105,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -220,13 +221,13 @@ function LeaderboardPage() {
                         children: "* 1 NFT = 1 share. Rewards are distributed proportionally based on the number of eligible NFTs held at the snapshot time."
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 112,
+                        lineNumber: 116,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                lineNumber: 98,
+                lineNumber: 102,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -240,7 +241,7 @@ function LeaderboardPage() {
                             children: "Refresh leaderboard"
                         }, void 0, false, {
                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                            lineNumber: 120,
+                            lineNumber: 124,
                             columnNumber: 11
                         }, this),
                         status && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -248,18 +249,18 @@ function LeaderboardPage() {
                             children: status
                         }, void 0, false, {
                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                            lineNumber: 124,
+                            lineNumber: 128,
                             columnNumber: 22
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                    lineNumber: 119,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                lineNumber: 118,
+                lineNumber: 122,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -269,7 +270,7 @@ function LeaderboardPage() {
                         children: "Top collectors"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 129,
+                        lineNumber: 133,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -282,34 +283,34 @@ function LeaderboardPage() {
                                         children: "Rank"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 133,
+                                        lineNumber: 137,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "Wallet"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 134,
+                                        lineNumber: 138,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "Countries"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 135,
+                                        lineNumber: 139,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "Total NFTs"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 136,
+                                        lineNumber: 140,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                lineNumber: 132,
+                                lineNumber: 136,
                                 columnNumber: 11
                             }, this),
                             collectors.map((collector, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -322,7 +323,7 @@ function LeaderboardPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 141,
+                                            lineNumber: 145,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -335,12 +336,12 @@ function LeaderboardPage() {
                                                 children: shortAddress(collector.address)
                                             }, void 0, false, {
                                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                                lineNumber: 143,
+                                                lineNumber: 147,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 142,
+                                            lineNumber: 146,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -350,20 +351,20 @@ function LeaderboardPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 157,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: collector.totalBalance
                                         }, void 0, false, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 158,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, collector.address, true, {
                                     fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                    lineNumber: 140,
+                                    lineNumber: 144,
                                     columnNumber: 13
                                 }, this)),
                             collectors.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -373,46 +374,46 @@ function LeaderboardPage() {
                                         children: "-"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 160,
+                                        lineNumber: 164,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "No collectors found yet"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 161,
+                                        lineNumber: 165,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "-"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 162,
+                                        lineNumber: 166,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: "-"
                                     }, void 0, false, {
                                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                        lineNumber: 163,
+                                        lineNumber: 167,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                lineNumber: 159,
+                                lineNumber: 163,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 131,
+                        lineNumber: 135,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                lineNumber: 128,
+                lineNumber: 132,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -422,7 +423,7 @@ function LeaderboardPage() {
                         children: "Latest mints"
                     }, void 0, false, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 170,
+                        lineNumber: 174,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -436,7 +437,7 @@ function LeaderboardPage() {
                                             alt: `${mint.country} Axie`
                                         }, void 0, false, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 175,
+                                            lineNumber: 179,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -447,7 +448,7 @@ function LeaderboardPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 181,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -455,7 +456,7 @@ function LeaderboardPage() {
                                             children: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$countries$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["countries"][mint.countryId - 1] || mint.country
                                         }, void 0, false, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 182,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -469,13 +470,13 @@ function LeaderboardPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                            lineNumber: 182,
+                                            lineNumber: 186,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, mint.txHash, true, {
                                     fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                    lineNumber: 174,
+                                    lineNumber: 178,
                                     columnNumber: 13
                                 }, this)),
                             latestMints.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -485,30 +486,30 @@ function LeaderboardPage() {
                                     children: "No mints found yet"
                                 }, void 0, false, {
                                     fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                    lineNumber: 190,
+                                    lineNumber: 194,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                                lineNumber: 189,
+                                lineNumber: 193,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                        lineNumber: 172,
+                        lineNumber: 176,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-                lineNumber: 169,
+                lineNumber: 173,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/ronin-worldcup-axie/frontend/app/leaderboard/page.tsx",
-        lineNumber: 89,
+        lineNumber: 93,
         columnNumber: 5
     }, this);
 }
