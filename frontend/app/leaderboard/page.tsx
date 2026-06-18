@@ -48,79 +48,94 @@ function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default function LeaderboardPage() {
   const [collectors, setCollectors] = useState<Collector[]>([]);
   const [latestMints, setLatestMints] = useState<LatestMint[]>([]);
   const [status, setStatus] = useState("");
+  const [syncing, setSyncing] = useState(false);
+
+  async function fetchLeaderboard() {
+    const res = await fetch("/api/leaderboard", {
+      cache: "no-store",
+    });
+
+    const text = await res.text();
+
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(text || "API returned no JSON");
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to load leaderboard");
+    }
+
+    return data;
+  }
 
   async function loadLeaderboard() {
     try {
       setStatus("Loading leaderboard...");
 
-      const res = await fetch("/api/leaderboard", {
-        cache: "no-store",
-      });
-
-      const text = await res.text();
-
-      let data: any;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(text || "API returned no JSON");
-      }
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to load leaderboard");
-      }
-
-      console.log("leaderboard api data", data);
+      const data = await fetchLeaderboard();
 
       setCollectors(Array.isArray(data.collectors) ? data.collectors : []);
       setLatestMints(Array.isArray(data.latestMints) ? data.latestMints : []);
 
-      setStatus(
-        `Indexed to block ${Number(data.lastIndexedBlock).toLocaleString()} · collectors: ${
-          data.collectors?.length || 0
-        } · mints: ${data.latestMints?.length || 0}`
-      );
+      const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
+      const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
 
       setStatus(
-        `Indexed to block ${Number(data.lastIndexedBlock).toLocaleString()}`
+        `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()} · collectors: ${
+          data.collectors?.length || 0
+        } · mints: ${data.latestMints?.length || 0}`
       );
     } catch (err: any) {
       setStatus(err?.message || "Failed to load leaderboard");
     }
   }
 
-  useEffect(() => {
-    loadLeaderboard();
-  }, []);
+  async function syncUntilDone() {
+    if (syncing) return;
 
-  useEffect(() => {
-  let stopped = false;
+    setSyncing(true);
 
-  async function syncLoop() {
-    while (!stopped) {
-      const res = await fetch("/api/stats", { cache: "no-store" });
-      const data = await res.json();
+    try {
+      while (true) {
+        const data = await fetchLeaderboard();
 
-      setStatus(
-        `Indexed ${data.lastIndexedBlock.toLocaleString()} / ${data.chainCurrentBlock.toLocaleString()}`
-      );
+        setCollectors(Array.isArray(data.collectors) ? data.collectors : []);
+        setLatestMints(Array.isArray(data.latestMints) ? data.latestMints : []);
 
-      if (data.isFullySynced) break;
+        const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
+        const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
 
-      await new Promise((r) => setTimeout(r, 1000));
+        setStatus(
+          `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()} · collectors: ${
+            data.collectors?.length || 0
+          } · mints: ${data.latestMints?.length || 0}`
+        );
+
+        if (data.isFullySynced === true) break;
+
+        await sleep(1500);
+      }
+    } catch (err: any) {
+      setStatus(err?.message || "Failed to sync leaderboard");
+    } finally {
+      setSyncing(false);
     }
   }
 
-  syncLoop();
-
-  return () => {
-    stopped = true;
-  };
-}, []);
+  useEffect(() => {
+    loadLeaderboard();
+  }, []);
 
   return (
     <main>
@@ -158,6 +173,10 @@ export default function LeaderboardPage() {
             Refresh leaderboard
           </button>
 
+          <button className="button" onClick={syncUntilDone} disabled={syncing}>
+            {syncing ? "Syncing..." : "Sync until fully indexed"}
+          </button>
+
           {status && <div className="status">{status}</div>}
         </div>
       </section>
@@ -191,6 +210,15 @@ export default function LeaderboardPage() {
               <div>{collector.totalBalance}</div>
             </div>
           ))}
+
+          {collectors.length === 0 && (
+            <div className="leaderboardRow">
+              <div>-</div>
+              <div>No collectors found yet</div>
+              <div>-</div>
+              <div>-</div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -212,6 +240,12 @@ export default function LeaderboardPage() {
               </p>
             </div>
           ))}
+
+          {latestMints.length === 0 && (
+            <div className="card">
+              <div className="name">No mints found yet</div>
+            </div>
+          )}
         </div>
       </section>
     </main>

@@ -233,7 +233,8 @@ const dynamic = "force-dynamic";
 const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
 const CHUNK_SIZE = 10;
-const MAX_BLOCKS_PER_CALL = 1_000;
+const MAX_BLOCKS_PER_CALL = 100;
+const DELAY_BETWEEN_REQUESTS_MS = 250;
 const TRANSFER_SINGLE_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferSingle(address,address,address,uint256,uint256)");
 const TRANSFER_BATCH_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferBatch(address,address,address,uint256[],uint256[])");
 const globalForLeaderboard = globalThis;
@@ -244,6 +245,9 @@ function emptyState() {
         latestMints: []
     };
 }
+function sleep(ms) {
+    return new Promise((resolve)=>setTimeout(resolve, ms));
+}
 function topicToAddress(topic) {
     return __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].getAddress(`0x${topic.slice(26)}`);
 }
@@ -251,12 +255,29 @@ async function getLogsChunked(provider, filter, fromBlock, toBlock) {
     const logs = [];
     for(let start = fromBlock; start <= toBlock; start += CHUNK_SIZE){
         const end = Math.min(start + CHUNK_SIZE - 1, toBlock);
-        const chunkLogs = await provider.getLogs({
-            ...filter,
-            fromBlock: start,
-            toBlock: end
-        });
-        logs.push(...chunkLogs);
+        try {
+            const chunkLogs = await provider.getLogs({
+                ...filter,
+                fromBlock: start,
+                toBlock: end
+            });
+            logs.push(...chunkLogs);
+            await sleep(DELAY_BETWEEN_REQUESTS_MS);
+        } catch (err) {
+            const isRateLimit = err?.error?.code === 429 || err?.code === 429 || String(err?.message || "").includes("429") || String(err?.message || "").toLowerCase().includes("rate");
+            if (isRateLimit) {
+                await sleep(2500);
+                const retryLogs = await provider.getLogs({
+                    ...filter,
+                    fromBlock: start,
+                    toBlock: end
+                });
+                logs.push(...retryLogs);
+                await sleep(DELAY_BETWEEN_REQUESTS_MS);
+                continue;
+            }
+            throw err;
+        }
     }
     return logs;
 }
@@ -287,8 +308,9 @@ function addLatestMint(state, minter, tokenId, txHash, blockNumber) {
     });
     const seen = new Set();
     state.latestMints = state.latestMints.filter((mint)=>{
-        if (seen.has(mint.txHash)) return false;
-        seen.add(mint.txHash);
+        const key = `${mint.txHash}-${mint.countryId}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
     }).sort((a, b)=>b.blockNumber - a.blockNumber).slice(0, 5);
 }
@@ -348,12 +370,12 @@ async function updateIndex() {
     if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"]) {
         throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
     }
-    const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["RONIN_RPC"]);
+    const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider("https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy");
     const chainCurrentBlock = await provider.getBlockNumber();
     const state = globalForLeaderboard.leaderboardState ?? emptyState();
     const fromBlock = Math.max(DEPLOYMENT_BLOCK, state.lastIndexedBlock + 1);
-    const currentBlock = Math.min(chainCurrentBlock, fromBlock + MAX_BLOCKS_PER_CALL - 1);
-    if (fromBlock <= currentBlock) {
+    const toBlock = Math.min(chainCurrentBlock, fromBlock + MAX_BLOCKS_PER_CALL - 1);
+    if (fromBlock <= toBlock) {
         const logs = await getLogsChunked(provider, {
             address: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"],
             topics: [
@@ -362,14 +384,17 @@ async function updateIndex() {
                     TRANSFER_BATCH_TOPIC
                 ]
             ]
-        }, fromBlock, currentBlock);
+        }, fromBlock, toBlock);
         for (const log of logs){
             applyLog(state, log);
         }
-        state.lastIndexedBlock = currentBlock;
+        state.lastIndexedBlock = toBlock;
     }
     globalForLeaderboard.leaderboardState = state;
-    return state;
+    return {
+        state,
+        chainCurrentBlock
+    };
 }
 async function GET(req) {
     try {
@@ -381,20 +406,25 @@ async function GET(req) {
         if (!globalForLeaderboard.leaderboardIndexing) {
             globalForLeaderboard.leaderboardIndexing = updateIndex();
         }
-        const state = await globalForLeaderboard.leaderboardIndexing;
+        const { state, chainCurrentBlock } = await globalForLeaderboard.leaderboardIndexing;
         globalForLeaderboard.leaderboardIndexing = undefined;
         return Response.json({
             lastIndexedBlock: state.lastIndexedBlock,
+            chainCurrentBlock,
+            isFullySynced: state.lastIndexedBlock >= chainCurrentBlock,
             balancesCount: Object.keys(state.balances).length,
-            latestMintsCount: state.latestMints.length,
             collectorsCount: buildCollectors(state).length,
+            latestMintsCount: state.latestMints.length,
             collectors: buildCollectors(state),
             latestMints: state.latestMints
         });
     } catch (err) {
         globalForLeaderboard.leaderboardIndexing = undefined;
         return Response.json({
-            error: err?.message || "Failed to load leaderboard"
+            error: err?.message || "Failed to load leaderboard",
+            code: err?.code,
+            data: err?.data,
+            shortMessage: err?.shortMessage
         }, {
             status: 500
         });

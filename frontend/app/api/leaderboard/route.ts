@@ -1,15 +1,15 @@
 export const dynamic = "force-dynamic";
 
 import { ethers } from "ethers";
-import { COLLECTION_ADDRESS, RONIN_RPC } from "../../lib/contracts";
+import { COLLECTION_ADDRESS } from "../../lib/contracts";
 import { countries } from "../../lib/countries";
 
 const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
+
 const CHUNK_SIZE = 10;
 const MAX_BLOCKS_PER_CALL = 100;
 const DELAY_BETWEEN_REQUESTS_MS = 250;
-
 
 const TRANSFER_SINGLE_TOPIC = ethers.id(
   "TransferSingle(address,address,address,uint256,uint256)"
@@ -31,13 +31,14 @@ type CachedState = {
   }[];
 };
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+type IndexResult = {
+  state: CachedState;
+  chainCurrentBlock: number;
+};
 
 const globalForLeaderboard = globalThis as unknown as {
   leaderboardState?: CachedState;
-  leaderboardIndexing?: Promise<CachedState>;
+  leaderboardIndexing?: Promise<IndexResult>;
 };
 
 function emptyState(): CachedState {
@@ -46,6 +47,10 @@ function emptyState(): CachedState {
     balances: {},
     latestMints: [],
   };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function topicToAddress(topic: string) {
@@ -71,11 +76,16 @@ async function getLogsChunked(
       });
 
       logs.push(...chunkLogs);
-
       await sleep(DELAY_BETWEEN_REQUESTS_MS);
     } catch (err: any) {
-      if (err?.code === "UNKNOWN_ERROR" || err?.error?.code === 429) {
-        await sleep(2000);
+      const isRateLimit =
+        err?.error?.code === 429 ||
+        err?.code === 429 ||
+        String(err?.message || "").includes("429") ||
+        String(err?.message || "").toLowerCase().includes("rate");
+
+      if (isRateLimit) {
+        await sleep(2500);
 
         const retryLogs = await provider.getLogs({
           ...filter,
@@ -152,8 +162,9 @@ function addLatestMint(
 
   state.latestMints = state.latestMints
     .filter((mint) => {
-      if (seen.has(mint.txHash)) return false;
-      seen.add(mint.txHash);
+      const key = `${mint.txHash}-${mint.countryId}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     })
     .sort((a, b) => b.blockNumber - a.blockNumber)
@@ -233,26 +244,28 @@ function buildCollectors(state: CachedState) {
     .slice(0, 20);
 }
 
-async function updateIndex() {
+async function updateIndex(): Promise<IndexResult> {
   if (!COLLECTION_ADDRESS) {
     throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
   }
 
-  const provider = new ethers.JsonRpcProvider(RONIN_RPC);
+
+  const provider = new ethers.JsonRpcProvider("https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy");
   const chainCurrentBlock = await provider.getBlockNumber();
+
   const state = globalForLeaderboard.leaderboardState ?? emptyState();
 
-    const fromBlock = Math.max(
+  const fromBlock = Math.max(
     DEPLOYMENT_BLOCK,
     state.lastIndexedBlock + 1
-    );
+  );
 
-    const currentBlock = Math.min(
+  const toBlock = Math.min(
     chainCurrentBlock,
     fromBlock + MAX_BLOCKS_PER_CALL - 1
-    );
+  );
 
-  if (fromBlock <= currentBlock) {
+  if (fromBlock <= toBlock) {
     const logs = await getLogsChunked(
       provider,
       {
@@ -260,19 +273,22 @@ async function updateIndex() {
         topics: [[TRANSFER_SINGLE_TOPIC, TRANSFER_BATCH_TOPIC]],
       },
       fromBlock,
-      currentBlock
+      toBlock
     );
 
     for (const log of logs) {
       applyLog(state, log);
     }
 
-    state.lastIndexedBlock = currentBlock;
+    state.lastIndexedBlock = toBlock;
   }
 
   globalForLeaderboard.leaderboardState = state;
 
-  return state;
+  return {
+    state,
+    chainCurrentBlock,
+  };
 }
 
 export async function GET(req: Request) {
@@ -288,15 +304,18 @@ export async function GET(req: Request) {
       globalForLeaderboard.leaderboardIndexing = updateIndex();
     }
 
-    const state = await globalForLeaderboard.leaderboardIndexing;
+    const { state, chainCurrentBlock } =
+      await globalForLeaderboard.leaderboardIndexing;
 
     globalForLeaderboard.leaderboardIndexing = undefined;
 
     return Response.json({
       lastIndexedBlock: state.lastIndexedBlock,
+      chainCurrentBlock,
+      isFullySynced: state.lastIndexedBlock >= chainCurrentBlock,
       balancesCount: Object.keys(state.balances).length,
-      latestMintsCount: state.latestMints.length,
       collectorsCount: buildCollectors(state).length,
+      latestMintsCount: state.latestMints.length,
       collectors: buildCollectors(state),
       latestMints: state.latestMints,
     });
@@ -304,7 +323,12 @@ export async function GET(req: Request) {
     globalForLeaderboard.leaderboardIndexing = undefined;
 
     return Response.json(
-      { error: err?.message || "Failed to load leaderboard" },
+      {
+        error: err?.message || "Failed to load leaderboard",
+        code: err?.code,
+        data: err?.data,
+        shortMessage: err?.shortMessage,
+      },
       { status: 500 }
     );
   }

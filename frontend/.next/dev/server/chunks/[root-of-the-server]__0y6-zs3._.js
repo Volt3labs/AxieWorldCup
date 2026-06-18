@@ -167,10 +167,14 @@ const dynamic = "force-dynamic";
 const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
 const CHUNK_SIZE = 10;
-const MAX_BLOCKS_PER_CALL = 1_000;
+const MAX_BLOCKS_PER_CALL = 100;
+const DELAY_BETWEEN_REQUESTS_MS = 250;
 const TRANSFER_SINGLE_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferSingle(address,address,address,uint256,uint256)");
 const TRANSFER_BATCH_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferBatch(address,address,address,uint256[],uint256[])");
 const globalForStats = globalThis;
+function sleep(ms) {
+    return new Promise((resolve)=>setTimeout(resolve, ms));
+}
 function emptyState() {
     const minted = {};
     for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
@@ -189,12 +193,28 @@ async function getLogsChunked(provider, filter, fromBlock, toBlock) {
     const logs = [];
     for(let start = fromBlock; start <= toBlock; start += CHUNK_SIZE){
         const end = Math.min(start + CHUNK_SIZE - 1, toBlock);
-        const chunkLogs = await provider.getLogs({
-            ...filter,
-            fromBlock: start,
-            toBlock: end
-        });
-        logs.push(...chunkLogs);
+        try {
+            const chunkLogs = await provider.getLogs({
+                ...filter,
+                fromBlock: start,
+                toBlock: end
+            });
+            logs.push(...chunkLogs);
+            await sleep(DELAY_BETWEEN_REQUESTS_MS);
+        } catch (err) {
+            if (err?.code === "UNKNOWN_ERROR" || err?.error?.code === 429) {
+                await sleep(2000);
+                const retryLogs = await provider.getLogs({
+                    ...filter,
+                    fromBlock: start,
+                    toBlock: end
+                });
+                logs.push(...retryLogs);
+                await sleep(DELAY_BETWEEN_REQUESTS_MS);
+                continue;
+            }
+            throw err;
+        }
     }
     return logs;
 }
