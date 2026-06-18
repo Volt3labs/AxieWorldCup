@@ -11,5 +11,5 @@ export const AXIE_ABI = [
 
 export const COLLECTION_ADDRESS = process.env.NEXT_PUBLIC_COLLECTION_ADDRESS || "";
 export const AXIE_CONTRACT = process.env.NEXT_PUBLIC_AXIE_CONTRACT || "0x32950db2a7164aE833121501C797D79E7B79d74C";
-export const RONIN_RPC = process.env.NEXT_PUBLIC_RONIN_RPC || "https://api.roninchain.com/rpc";
+export const RONIN_RPC = "https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy";
 export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID || "2020");

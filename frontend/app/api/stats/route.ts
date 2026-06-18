@@ -1,13 +1,13 @@
 export const dynamic = "force-dynamic";
 
 import { ethers } from "ethers";
-import {
-  COLLECTION_ADDRESS,
-  RONIN_RPC,
-} from "../../lib/contracts";
+import { COLLECTION_ADDRESS } from "../../lib/contracts";
 
 const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
+
+const CHUNK_SIZE = 10;
+const MAX_BLOCKS_PER_CALL = 1_000;
 
 const TRANSFER_SINGLE_TOPIC = ethers.id(
   "TransferSingle(address,address,address,uint256,uint256)"
@@ -17,10 +17,30 @@ const TRANSFER_BATCH_TOPIC = ethers.id(
   "TransferBatch(address,address,address,uint256[],uint256[])"
 );
 
-type TokenStats = {
-  minted: number;
-  owners: number;
+type CachedState = {
+  lastIndexedBlock: number;
+  minted: Record<string, string>;
+  balances: Record<string, Record<string, string>>;
 };
+
+const globalForStats = globalThis as unknown as {
+  statsState?: CachedState;
+  statsIndexing?: Promise<CachedState>;
+};
+
+function emptyState(): CachedState {
+  const minted: Record<string, string> = {};
+
+  for (let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++) {
+    minted[String(tokenId)] = "0";
+  }
+
+  return {
+    lastIndexedBlock: DEPLOYMENT_BLOCK - 1,
+    minted,
+    balances: {},
+  };
+}
 
 function topicToAddress(topic: string) {
   return ethers.getAddress(`0x${topic.slice(26)}`);
@@ -30,13 +50,12 @@ async function getLogsChunked(
   provider: ethers.JsonRpcProvider,
   filter: ethers.Filter,
   fromBlock: number,
-  toBlock: number,
-  chunkSize = 90000
+  toBlock: number
 ) {
   const logs: ethers.Log[] = [];
 
-  for (let start = fromBlock; start <= toBlock; start += chunkSize) {
-    const end = Math.min(start + chunkSize - 1, toBlock);
+  for (let start = fromBlock; start <= toBlock; start += CHUNK_SIZE) {
+    const end = Math.min(start + CHUNK_SIZE - 1, toBlock);
 
     const chunkLogs = await provider.getLogs({
       ...filter,
@@ -50,149 +69,204 @@ async function getLogsChunked(
   return logs;
 }
 
-export async function GET() {
-  try {
-    if (!COLLECTION_ADDRESS) {
-      return Response.json(
-        {
-          error: "Missing NEXT_PUBLIC_COLLECTION_ADDRESS",
-        },
-        { status: 500 }
-      );
+function addBalance(
+  state: CachedState,
+  owner: string,
+  tokenId: number,
+  amount: bigint
+) {
+  if (owner === ethers.ZeroAddress) return;
+  if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
+
+  const user = owner.toLowerCase();
+  const id = String(tokenId);
+
+  state.balances[user] ??= {};
+  state.balances[user][id] = (
+    BigInt(state.balances[user][id] || "0") + amount
+  ).toString();
+}
+
+function subBalance(
+  state: CachedState,
+  owner: string,
+  tokenId: number,
+  amount: bigint
+) {
+  if (owner === ethers.ZeroAddress) return;
+  if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
+
+  const user = owner.toLowerCase();
+  const id = String(tokenId);
+
+  state.balances[user] ??= {};
+  state.balances[user][id] = (
+    BigInt(state.balances[user][id] || "0") - amount
+  ).toString();
+}
+
+function applyLog(state: CachedState, log: ethers.Log) {
+  if (log.topics[0] === TRANSFER_SINGLE_TOPIC) {
+    const from = topicToAddress(log.topics[2]);
+    const to = topicToAddress(log.topics[3]);
+
+    const [id, value] = ethers.AbiCoder.defaultAbiCoder().decode(
+      ["uint256", "uint256"],
+      log.data
+    );
+
+    const tokenId = Number(id);
+    const amount = BigInt(value.toString());
+
+    if (
+      from === ethers.ZeroAddress &&
+      tokenId >= 1 &&
+      tokenId <= COUNTRY_COUNT
+    ) {
+      state.minted[String(tokenId)] = (
+        BigInt(state.minted[String(tokenId)] || "0") + amount
+      ).toString();
     }
 
-    const provider = new ethers.JsonRpcProvider(RONIN_RPC);
-    const currentBlock = await provider.getBlockNumber();
+    subBalance(state, from, tokenId, amount);
+    addBalance(state, to, tokenId, amount);
+  }
 
+  if (log.topics[0] === TRANSFER_BATCH_TOPIC) {
+    const from = topicToAddress(log.topics[2]);
+    const to = topicToAddress(log.topics[3]);
+
+    const [ids, values] = ethers.AbiCoder.defaultAbiCoder().decode(
+      ["uint256[]", "uint256[]"],
+      log.data
+    );
+
+    ids.forEach((id: bigint, index: number) => {
+      const tokenId = Number(id);
+      const amount = BigInt(values[index].toString());
+
+      if (
+        from === ethers.ZeroAddress &&
+        tokenId >= 1 &&
+        tokenId <= COUNTRY_COUNT
+      ) {
+        state.minted[String(tokenId)] = (
+          BigInt(state.minted[String(tokenId)] || "0") + amount
+        ).toString();
+      }
+
+      subBalance(state, from, tokenId, amount);
+      addBalance(state, to, tokenId, amount);
+    });
+  }
+}
+
+function buildStats(state: CachedState) {
+  const stats: Record<number, { minted: number; owners: number }> = {};
+
+  for (let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++) {
+    let owners = 0;
+
+    for (const userBalances of Object.values(state.balances)) {
+      if (BigInt(userBalances[String(tokenId)] || "0") > 0n) {
+        owners++;
+      }
+    }
+
+    stats[tokenId] = {
+      minted: Number(state.minted[String(tokenId)] || "0"),
+      owners,
+    };
+  }
+
+  return stats;
+}
+
+async function updateIndex() {
+  if (!COLLECTION_ADDRESS) {
+    throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
+  }
+
+  if (!process.env.RONIN_RPC_URL) {
+    throw new Error("Missing RONIN_RPC_URL");
+  }
+
+  const provider = new ethers.JsonRpcProvider(process.env.RONIN_RPC_URL);
+  const chainCurrentBlock = await provider.getBlockNumber();
+
+  const state = globalForStats.statsState ?? emptyState();
+
+  const fromBlock = Math.max(
+    DEPLOYMENT_BLOCK,
+    state.lastIndexedBlock + 1
+  );
+
+  const toBlock = Math.min(
+    chainCurrentBlock,
+    fromBlock + MAX_BLOCKS_PER_CALL - 1
+  );
+
+  if (fromBlock <= toBlock) {
     const logs = await getLogsChunked(
       provider,
       {
         address: COLLECTION_ADDRESS,
         topics: [[TRANSFER_SINGLE_TOPIC, TRANSFER_BATCH_TOPIC]],
       },
-      DEPLOYMENT_BLOCK,
-      currentBlock
+      fromBlock,
+      toBlock
     );
 
-    const minted: Record<number, bigint> = {};
-    const balances: Record<number, Map<string, bigint>> = {};
-
-    for (let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++) {
-      minted[tokenId] = 0n;
-      balances[tokenId] = new Map();
-    }
-
-    function addBalance(
-      owner: string,
-      tokenId: number,
-      amount: bigint
-    ) {
-      if (owner === ethers.ZeroAddress) return;
-      if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
-
-      const key = owner.toLowerCase();
-
-      balances[tokenId].set(
-        key,
-        (balances[tokenId].get(key) || 0n) + amount
-      );
-    }
-
-    function subBalance(
-      owner: string,
-      tokenId: number,
-      amount: bigint
-    ) {
-      if (owner === ethers.ZeroAddress) return;
-      if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
-
-      const key = owner.toLowerCase();
-
-      balances[tokenId].set(
-        key,
-        (balances[tokenId].get(key) || 0n) - amount
-      );
-    }
-
     for (const log of logs) {
-      if (log.topics[0] === TRANSFER_SINGLE_TOPIC) {
-        const from = topicToAddress(log.topics[2]);
-        const to = topicToAddress(log.topics[3]);
-
-        const [id, value] =
-          ethers.AbiCoder.defaultAbiCoder().decode(
-            ["uint256", "uint256"],
-            log.data
-          );
-
-        const tokenId = Number(id);
-        const amount = BigInt(value.toString());
-
-        if (
-          tokenId >= 1 &&
-          tokenId <= COUNTRY_COUNT &&
-          from === ethers.ZeroAddress
-        ) {
-          minted[tokenId] += amount;
-        }
-
-        subBalance(from, tokenId, amount);
-        addBalance(to, tokenId, amount);
-      }
-
-      if (log.topics[0] === TRANSFER_BATCH_TOPIC) {
-        const from = topicToAddress(log.topics[2]);
-        const to = topicToAddress(log.topics[3]);
-
-        const [ids, values] =
-          ethers.AbiCoder.defaultAbiCoder().decode(
-            ["uint256[]", "uint256[]"],
-            log.data
-          );
-
-        ids.forEach((id: bigint, index: number) => {
-          const tokenId = Number(id);
-          const amount = BigInt(values[index].toString());
-
-          if (
-            tokenId >= 1 &&
-            tokenId <= COUNTRY_COUNT &&
-            from === ethers.ZeroAddress
-          ) {
-            minted[tokenId] += amount;
-          }
-
-          subBalance(from, tokenId, amount);
-          addBalance(to, tokenId, amount);
-        });
-      }
+      applyLog(state, log);
     }
 
-    const stats: Record<number, TokenStats> = {};
+    state.lastIndexedBlock = toBlock;
+  }
 
-    for (let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++) {
-      const owners = Array.from(
-        balances[tokenId].values()
-      ).filter((balance) => balance > 0n).length;
+  globalForStats.statsState = state;
 
-      stats[tokenId] = {
-        minted: Number(minted[tokenId]),
-        owners,
-      };
+  return {
+    state,
+    chainCurrentBlock,
+  };
+}
+
+export async function GET(req: Request) {
+  try {
+    const url = new URL(req.url);
+
+    if (url.searchParams.get("reset") === "1") {
+      globalForStats.statsState = undefined;
+      globalForStats.statsIndexing = undefined;
     }
 
-    return Response.json(stats, {
-      headers: {
-        "Cache-Control":
-          "s-maxage=300, stale-while-revalidate=3600",
-      },
+    if (!globalForStats.statsIndexing) {
+      globalForStats.statsIndexing = updateIndex().then((result) => result.state);
+    }
+
+    const state = await globalForStats.statsIndexing;
+    globalForStats.statsIndexing = undefined;
+
+    const provider = new ethers.JsonRpcProvider(process.env.RONIN_RPC_URL);
+    const chainCurrentBlock = await provider.getBlockNumber();
+
+    return Response.json({
+      lastIndexedBlock: state.lastIndexedBlock,
+      chainCurrentBlock,
+      isFullySynced: state.lastIndexedBlock >= chainCurrentBlock,
+      balancesCount: Object.keys(state.balances).length,
+      stats: buildStats(state),
     });
   } catch (err: any) {
-    console.error(err);
+    globalForStats.statsIndexing = undefined;
 
     return Response.json(
       {
         error: err?.message || "Failed to load stats",
+        code: err?.code,
+        data: err?.data,
+        shortMessage: err?.shortMessage,
       },
       { status: 500 }
     );

@@ -1,4 +1,4 @@
 {
-  "/leaderboard/page": "app/leaderboard/page.js",
-  "/page": "app/page.js"
+  "/api/leaderboard/route": "app/api/leaderboard/route.js",
+  "/leaderboard/page": "app/leaderboard/page.js"
 }

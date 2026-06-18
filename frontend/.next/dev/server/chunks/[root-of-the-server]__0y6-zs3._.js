@@ -147,7 +147,7 @@ const AXIE_ABI = [
 ];
 const COLLECTION_ADDRESS = ("TURBOPACK compile-time value", "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB") || "";
 const AXIE_CONTRACT = ("TURBOPACK compile-time value", "0x32950db2a7164aE833121501C797D79E7B79d74C") || "0x32950db2a7164aE833121501C797D79E7B79d74C";
-const RONIN_RPC = ("TURBOPACK compile-time value", "https://api.roninchain.com/rpc") || "https://api.roninchain.com/rpc";
+const RONIN_RPC = "https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy";
 const CHAIN_ID = Number(("TURBOPACK compile-time value", "2020") || "2020");
 }),
 "[project]/ronin-worldcup-axie/frontend/app/api/stats/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
@@ -166,15 +166,29 @@ const dynamic = "force-dynamic";
 ;
 const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
+const CHUNK_SIZE = 10;
+const MAX_BLOCKS_PER_CALL = 1_000;
 const TRANSFER_SINGLE_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferSingle(address,address,address,uint256,uint256)");
 const TRANSFER_BATCH_TOPIC = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].id("TransferBatch(address,address,address,uint256[],uint256[])");
+const globalForStats = globalThis;
+function emptyState() {
+    const minted = {};
+    for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
+        minted[String(tokenId)] = "0";
+    }
+    return {
+        lastIndexedBlock: DEPLOYMENT_BLOCK - 1,
+        minted,
+        balances: {}
+    };
+}
 function topicToAddress(topic) {
     return __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].getAddress(`0x${topic.slice(26)}`);
 }
-async function getLogsChunked(provider, filter, fromBlock, toBlock, chunkSize = 90000) {
+async function getLogsChunked(provider, filter, fromBlock, toBlock) {
     const logs = [];
-    for(let start = fromBlock; start <= toBlock; start += chunkSize){
-        const end = Math.min(start + chunkSize - 1, toBlock);
+    for(let start = fromBlock; start <= toBlock; start += CHUNK_SIZE){
+        const end = Math.min(start + CHUNK_SIZE - 1, toBlock);
         const chunkLogs = await provider.getLogs({
             ...filter,
             fromBlock: start,
@@ -184,17 +198,85 @@ async function getLogsChunked(provider, filter, fromBlock, toBlock, chunkSize = 
     }
     return logs;
 }
-async function GET() {
-    try {
-        if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"]) {
-            return Response.json({
-                error: "Missing NEXT_PUBLIC_COLLECTION_ADDRESS"
-            }, {
-                status: 500
-            });
+function addBalance(state, owner, tokenId, amount) {
+    if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
+    if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
+    const user = owner.toLowerCase();
+    const id = String(tokenId);
+    state.balances[user] ??= {};
+    state.balances[user][id] = (BigInt(state.balances[user][id] || "0") + amount).toString();
+}
+function subBalance(state, owner, tokenId, amount) {
+    if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
+    if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
+    const user = owner.toLowerCase();
+    const id = String(tokenId);
+    state.balances[user] ??= {};
+    state.balances[user][id] = (BigInt(state.balances[user][id] || "0") - amount).toString();
+}
+function applyLog(state, log) {
+    if (log.topics[0] === TRANSFER_SINGLE_TOPIC) {
+        const from = topicToAddress(log.topics[2]);
+        const to = topicToAddress(log.topics[3]);
+        const [id, value] = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].AbiCoder.defaultAbiCoder().decode([
+            "uint256",
+            "uint256"
+        ], log.data);
+        const tokenId = Number(id);
+        const amount = BigInt(value.toString());
+        if (from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress && tokenId >= 1 && tokenId <= COUNTRY_COUNT) {
+            state.minted[String(tokenId)] = (BigInt(state.minted[String(tokenId)] || "0") + amount).toString();
         }
-        const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["RONIN_RPC"]);
-        const currentBlock = await provider.getBlockNumber();
+        subBalance(state, from, tokenId, amount);
+        addBalance(state, to, tokenId, amount);
+    }
+    if (log.topics[0] === TRANSFER_BATCH_TOPIC) {
+        const from = topicToAddress(log.topics[2]);
+        const to = topicToAddress(log.topics[3]);
+        const [ids, values] = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].AbiCoder.defaultAbiCoder().decode([
+            "uint256[]",
+            "uint256[]"
+        ], log.data);
+        ids.forEach((id, index)=>{
+            const tokenId = Number(id);
+            const amount = BigInt(values[index].toString());
+            if (from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress && tokenId >= 1 && tokenId <= COUNTRY_COUNT) {
+                state.minted[String(tokenId)] = (BigInt(state.minted[String(tokenId)] || "0") + amount).toString();
+            }
+            subBalance(state, from, tokenId, amount);
+            addBalance(state, to, tokenId, amount);
+        });
+    }
+}
+function buildStats(state) {
+    const stats = {};
+    for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
+        let owners = 0;
+        for (const userBalances of Object.values(state.balances)){
+            if (BigInt(userBalances[String(tokenId)] || "0") > 0n) {
+                owners++;
+            }
+        }
+        stats[tokenId] = {
+            minted: Number(state.minted[String(tokenId)] || "0"),
+            owners
+        };
+    }
+    return stats;
+}
+async function updateIndex() {
+    if (!__TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"]) {
+        throw new Error("Missing NEXT_PUBLIC_COLLECTION_ADDRESS");
+    }
+    if (!process.env.RONIN_RPC_URL) {
+        throw new Error("Missing RONIN_RPC_URL");
+    }
+    const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(process.env.RONIN_RPC_URL);
+    const chainCurrentBlock = await provider.getBlockNumber();
+    const state = globalForStats.statsState ?? emptyState();
+    const fromBlock = Math.max(DEPLOYMENT_BLOCK, state.lastIndexedBlock + 1);
+    const toBlock = Math.min(chainCurrentBlock, fromBlock + MAX_BLOCKS_PER_CALL - 1);
+    if (fromBlock <= toBlock) {
         const logs = await getLogsChunked(provider, {
             address: __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$app$2f$lib$2f$contracts$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["COLLECTION_ADDRESS"],
             topics: [
@@ -203,76 +285,46 @@ async function GET() {
                     TRANSFER_BATCH_TOPIC
                 ]
             ]
-        }, DEPLOYMENT_BLOCK, currentBlock);
-        const minted = {};
-        const balances = {};
-        for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
-            minted[tokenId] = 0n;
-            balances[tokenId] = new Map();
-        }
-        function addBalance(owner, tokenId, amount) {
-            if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
-            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
-            const key = owner.toLowerCase();
-            balances[tokenId].set(key, (balances[tokenId].get(key) || 0n) + amount);
-        }
-        function subBalance(owner, tokenId, amount) {
-            if (owner === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) return;
-            if (tokenId < 1 || tokenId > COUNTRY_COUNT) return;
-            const key = owner.toLowerCase();
-            balances[tokenId].set(key, (balances[tokenId].get(key) || 0n) - amount);
-        }
+        }, fromBlock, toBlock);
         for (const log of logs){
-            if (log.topics[0] === TRANSFER_SINGLE_TOPIC) {
-                const from = topicToAddress(log.topics[2]);
-                const to = topicToAddress(log.topics[3]);
-                const [id, value] = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].AbiCoder.defaultAbiCoder().decode([
-                    "uint256",
-                    "uint256"
-                ], log.data);
-                const tokenId = Number(id);
-                const amount = BigInt(value.toString());
-                if (tokenId >= 1 && tokenId <= COUNTRY_COUNT && from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
-                    minted[tokenId] += amount;
-                }
-                subBalance(from, tokenId, amount);
-                addBalance(to, tokenId, amount);
-            }
-            if (log.topics[0] === TRANSFER_BATCH_TOPIC) {
-                const from = topicToAddress(log.topics[2]);
-                const to = topicToAddress(log.topics[3]);
-                const [ids, values] = __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].AbiCoder.defaultAbiCoder().decode([
-                    "uint256[]",
-                    "uint256[]"
-                ], log.data);
-                ids.forEach((id, index)=>{
-                    const tokenId = Number(id);
-                    const amount = BigInt(values[index].toString());
-                    if (tokenId >= 1 && tokenId <= COUNTRY_COUNT && from === __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].ZeroAddress) {
-                        minted[tokenId] += amount;
-                    }
-                    subBalance(from, tokenId, amount);
-                    addBalance(to, tokenId, amount);
-                });
-            }
+            applyLog(state, log);
         }
-        const stats = {};
-        for(let tokenId = 1; tokenId <= COUNTRY_COUNT; tokenId++){
-            const owners = Array.from(balances[tokenId].values()).filter((balance)=>balance > 0n).length;
-            stats[tokenId] = {
-                minted: Number(minted[tokenId]),
-                owners
-            };
+        state.lastIndexedBlock = toBlock;
+    }
+    globalForStats.statsState = state;
+    return {
+        state,
+        chainCurrentBlock
+    };
+}
+async function GET(req) {
+    try {
+        const url = new URL(req.url);
+        if (url.searchParams.get("reset") === "1") {
+            globalForStats.statsState = undefined;
+            globalForStats.statsIndexing = undefined;
         }
-        return Response.json(stats, {
-            headers: {
-                "Cache-Control": "s-maxage=300, stale-while-revalidate=3600"
-            }
+        if (!globalForStats.statsIndexing) {
+            globalForStats.statsIndexing = updateIndex().then((result)=>result.state);
+        }
+        const state = await globalForStats.statsIndexing;
+        globalForStats.statsIndexing = undefined;
+        const provider = new __TURBOPACK__imported__module__$5b$project$5d2f$ronin$2d$worldcup$2d$axie$2f$frontend$2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].JsonRpcProvider(process.env.RONIN_RPC_URL);
+        const chainCurrentBlock = await provider.getBlockNumber();
+        return Response.json({
+            lastIndexedBlock: state.lastIndexedBlock,
+            chainCurrentBlock,
+            isFullySynced: state.lastIndexedBlock >= chainCurrentBlock,
+            balancesCount: Object.keys(state.balances).length,
+            stats: buildStats(state)
         });
     } catch (err) {
-        console.error(err);
+        globalForStats.statsIndexing = undefined;
         return Response.json({
-            error: err?.message || "Failed to load stats"
+            error: err?.message || "Failed to load stats",
+            code: err?.code,
+            data: err?.data,
+            shortMessage: err?.shortMessage
         }, {
             status: 500
         });

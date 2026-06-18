@@ -552,4 +552,43 @@ footer {
   font-weight: 900;
 }
 
+@media (max-width: 768px) {
+  .nav {
+    position: relative;
+  }
+
+  .nav-toggle {
+    display: block !important;
+  }
+
+  .nav-menu {
+    display: none !important;
+  }
+
+  .nav-menu.is-open {
+    z-index: 9999;
+    background: #0b1b2d;
+    border: 1px solid #26384f;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 180px;
+    padding: 16px;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .nav-menu {
+    gap: 20px;
+    display: flex !important;
+  }
+}
+
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

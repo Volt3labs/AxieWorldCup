@@ -414,3 +414,42 @@ footer { padding: 40px 32px; text-align:center; color: var(--muted); }
   opacity: 1;
   font-weight: 900;
 }
+
+@media (max-width: 768px) {
+  .nav {
+    position: relative;
+  }
+
+  .nav-toggle {
+    display: block !important;
+  }
+
+  .nav-menu {
+    display: none !important;
+  }
+
+  .nav-menu.is-open {
+    display: flex !important;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    min-width: 180px;
+    background: #0b1b2d;
+    border: 1px solid #26384f;
+    z-index: 9999;
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .nav-menu {
+    display: flex !important;
+    gap: 20px;
+  }
+}

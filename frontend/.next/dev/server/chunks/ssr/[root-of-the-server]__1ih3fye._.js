@@ -175,7 +175,7 @@ const AXIE_ABI = [
 ];
 const COLLECTION_ADDRESS = ("TURBOPACK compile-time value", "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB") || "";
 const AXIE_CONTRACT = ("TURBOPACK compile-time value", "0x32950db2a7164aE833121501C797D79E7B79d74C") || "0x32950db2a7164aE833121501C797D79E7B79d74C";
-const RONIN_RPC = ("TURBOPACK compile-time value", "https://api.roninchain.com/rpc") || "https://api.roninchain.com/rpc";
+const RONIN_RPC = "https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy";
 const CHAIN_ID = Number(("TURBOPACK compile-time value", "2020") || "2020");
 }),
 "[project]/ronin-worldcup-axie/frontend/app/inventory/InventoryContent.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {

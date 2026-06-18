@@ -12,6 +12,7 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "latest",
     "@tanstack/react-query": "latest",
+    "@vercel/kv": "^3.0.0",
     "ethers": "latest",
     "next": "latest",
     "react": "latest",

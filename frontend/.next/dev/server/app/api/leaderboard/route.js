@@ -1,0 +1,13 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/leaderboard/route.js")
+R.c("server/chunks/ronin-worldcup-axie_frontend_app_api_leaderboard_route_ts_1rh7isv._.js")
+R.c("server/chunks/0yz5_next_dist_0qiff_7._.js")
+R.c("server/chunks/0yz5_ethers_lib_esm_abi_1qvrgg4._.js")
+R.c("server/chunks/0yz5_ethers_lib_esm_providers_02ibg1y._.js")
+R.c("server/chunks/0yz5_ethers_lib_esm_wallet_0iua_4f._.js")
+R.c("server/chunks/0yz5_ethers_lib_esm_0hbd7uj._.js")
+R.c("server/chunks/0yz5_@noble_curves_esm_0p0ok-q._.js")
+R.c("server/chunks/0yz5_15_f49v._.js")
+R.c("server/chunks/[root-of-the-server]__1q5301i._.js")
+R.c("server/chunks/0ub2_frontend__next-internal_server_app_api_leaderboard_route_actions_1yr5cc0.js")
+R.m("[project]/ronin-worldcup-axie/frontend/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/ronin-worldcup-axie/frontend/app/api/leaderboard/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/ronin-worldcup-axie/frontend/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/ronin-worldcup-axie/frontend/app/api/leaderboard/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports
