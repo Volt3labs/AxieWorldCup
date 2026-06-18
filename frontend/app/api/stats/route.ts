@@ -7,7 +7,8 @@ const COUNTRY_COUNT = 48;
 const DEPLOYMENT_BLOCK = 56865900;
 
 const CHUNK_SIZE = 10;
-const MAX_BLOCKS_PER_CALL = 1_000;
+const MAX_BLOCKS_PER_CALL = 100;
+const DELAY_BETWEEN_REQUESTS_MS = 250;
 
 const TRANSFER_SINGLE_TOPIC = ethers.id(
   "TransferSingle(address,address,address,uint256,uint256)"
@@ -27,6 +28,9 @@ const globalForStats = globalThis as unknown as {
   statsState?: CachedState;
   statsIndexing?: Promise<CachedState>;
 };
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function emptyState(): CachedState {
   const minted: Record<string, string> = {};
@@ -57,13 +61,33 @@ async function getLogsChunked(
   for (let start = fromBlock; start <= toBlock; start += CHUNK_SIZE) {
     const end = Math.min(start + CHUNK_SIZE - 1, toBlock);
 
-    const chunkLogs = await provider.getLogs({
-      ...filter,
-      fromBlock: start,
-      toBlock: end,
-    });
+    try {
+      const chunkLogs = await provider.getLogs({
+        ...filter,
+        fromBlock: start,
+        toBlock: end,
+      });
 
-    logs.push(...chunkLogs);
+      logs.push(...chunkLogs);
+
+      await sleep(DELAY_BETWEEN_REQUESTS_MS);
+    } catch (err: any) {
+      if (err?.code === "UNKNOWN_ERROR" || err?.error?.code === 429) {
+        await sleep(2000);
+
+        const retryLogs = await provider.getLogs({
+          ...filter,
+          fromBlock: start,
+          toBlock: end,
+        });
+
+        logs.push(...retryLogs);
+        await sleep(DELAY_BETWEEN_REQUESTS_MS);
+        continue;
+      }
+
+      throw err;
+    }
   }
 
   return logs;

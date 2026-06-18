@@ -97,6 +97,31 @@ export default function LeaderboardPage() {
     loadLeaderboard();
   }, []);
 
+  useEffect(() => {
+  let stopped = false;
+
+  async function syncLoop() {
+    while (!stopped) {
+      const res = await fetch("/api/stats", { cache: "no-store" });
+      const data = await res.json();
+
+      setStatus(
+        `Indexed ${data.lastIndexedBlock.toLocaleString()} / ${data.chainCurrentBlock.toLocaleString()}`
+      );
+
+      if (data.isFullySynced) break;
+
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+
+  syncLoop();
+
+  return () => {
+    stopped = true;
+  };
+}, []);
+
   return (
     <main>
       <section className="hero">
