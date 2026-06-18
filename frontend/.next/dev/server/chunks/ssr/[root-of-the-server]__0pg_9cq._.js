@@ -173,7 +173,7 @@ const ERC1155_ABI = [
 const AXIE_ABI = [
     "function safeTransferFrom(address from, address to, uint256 tokenId)"
 ];
-const COLLECTION_ADDRESS = ("TURBOPACK compile-time value", "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB") || "";
+const COLLECTION_ADDRESS = ("TURBOPACK compile-time value", "0x9f0ba160473ab48027cb1b6c0fc166cc66f9f9fb") || "";
 const AXIE_CONTRACT = ("TURBOPACK compile-time value", "0x32950db2a7164aE833121501C797D79E7B79d74C") || "0x32950db2a7164aE833121501C797D79E7B79d74C";
 const RONIN_RPC = "https://ronin-mainnet.g.alchemy.com/v2/Eueiz9Tl-1dLjyHfhi6qy";
 const CHAIN_ID = Number(("TURBOPACK compile-time value", "2020") || "2020");

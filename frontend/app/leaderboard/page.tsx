@@ -48,42 +48,24 @@ function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export default function LeaderboardPage() {
   const [collectors, setCollectors] = useState<Collector[]>([]);
   const [latestMints, setLatestMints] = useState<LatestMint[]>([]);
   const [status, setStatus] = useState("");
-  const [syncing, setSyncing] = useState(false);
-
-  async function fetchLeaderboard() {
-    const res = await fetch("/api/leaderboard", {
-      cache: "no-store",
-    });
-
-    const text = await res.text();
-
-    let data: any;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error(text || "API returned no JSON");
-    }
-
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to load leaderboard");
-    }
-
-    return data;
-  }
 
   async function loadLeaderboard() {
     try {
       setStatus("Loading leaderboard...");
 
-      const data = await fetchLeaderboard();
+      const res = await fetch("/api/leaderboard", {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to load leaderboard");
+      }
 
       setCollectors(Array.isArray(data.collectors) ? data.collectors : []);
       setLatestMints(Array.isArray(data.latestMints) ? data.latestMints : []);
@@ -92,44 +74,10 @@ export default function LeaderboardPage() {
       const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
 
       setStatus(
-        `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()} · collectors: ${
-          data.collectors?.length || 0
-        } · mints: ${data.latestMints?.length || 0}`
+        `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`
       );
     } catch (err: any) {
       setStatus(err?.message || "Failed to load leaderboard");
-    }
-  }
-
-  async function syncUntilDone() {
-    if (syncing) return;
-
-    setSyncing(true);
-
-    try {
-      while (true) {
-        const data = await fetchLeaderboard();
-
-        setCollectors(Array.isArray(data.collectors) ? data.collectors : []);
-        setLatestMints(Array.isArray(data.latestMints) ? data.latestMints : []);
-
-        const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
-        const chainCurrentBlock = Number(data.chainCurrentBlock ?? lastIndexedBlock);
-
-        setStatus(
-          `Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()} · collectors: ${
-            data.collectors?.length || 0
-          } · mints: ${data.latestMints?.length || 0}`
-        );
-
-        if (data.isFullySynced === true) break;
-
-        await sleep(1500);
-      }
-    } catch (err: any) {
-      setStatus(err?.message || "Failed to sync leaderboard");
-    } finally {
-      setSyncing(false);
     }
   }
 
@@ -171,10 +119,6 @@ export default function LeaderboardPage() {
         <div className="panel">
           <button className="button" onClick={loadLeaderboard}>
             Refresh leaderboard
-          </button>
-
-          <button className="button" onClick={syncUntilDone} disabled={syncing}>
-            {syncing ? "Syncing..." : "Sync until fully indexed"}
           </button>
 
           {status && <div className="status">{status}</div>}
