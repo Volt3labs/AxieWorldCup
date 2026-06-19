@@ -48,10 +48,59 @@ function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default function LeaderboardPage() {
   const [collectors, setCollectors] = useState<Collector[]>([]);
   const [latestMints, setLatestMints] = useState<LatestMint[]>([]);
   const [status, setStatus] = useState("");
+  const [syncing, setSyncing] = useState(false);
+
+  async function syncUntilDone() {
+    if (syncing) return;
+
+    setSyncing(true);
+
+    try {
+      while (true) {
+        const res = await fetch("/api/leaderboard", {
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Sync failed");
+        }
+
+        setCollectors(data.collectors || []);
+        setLatestMints(data.latestMints || []);
+
+        const lastIndexedBlock = Number(data.lastIndexedBlock ?? 0);
+        const chainCurrentBlock = Number(
+          data.chainCurrentBlock ?? lastIndexedBlock
+        );
+
+        setStatus(
+          data.isFullySynced
+            ? `✅ Fully synced at block ${lastIndexedBlock.toLocaleString()}`
+            : `⏳ Indexed ${lastIndexedBlock.toLocaleString()} / ${chainCurrentBlock.toLocaleString()}`
+        );
+
+        if (data.isFullySynced) {
+          break;
+        }
+
+        await sleep(1000);
+      }
+    } catch (err: any) {
+      setStatus(err?.message || "Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   async function loadLeaderboard() {
     try {
@@ -123,6 +172,13 @@ export default function LeaderboardPage() {
         <div className="panel">
           <button className="button" onClick={loadLeaderboard}>
             Refresh leaderboard
+          </button>
+          <button
+            className="button"
+            onClick={syncUntilDone}
+            disabled={syncing}
+          >
+            {syncing ? "Syncing..." : "Full sync"}
           </button>
 
           {status && <div className="status">{status}</div>}
