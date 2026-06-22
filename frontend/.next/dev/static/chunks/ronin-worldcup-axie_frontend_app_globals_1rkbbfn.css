@@ -331,10 +331,6 @@ footer {
   .leaderboardRow {
     grid-template-columns: 60px 1fr;
   }
-
-  .leaderboardRow > div:nth-child(3), .leaderboardRow > div:nth-child(4) {
-    display: none;
-  }
 }
 
 .rewardGrid {
@@ -589,6 +585,28 @@ footer {
     gap: 20px;
     display: flex !important;
   }
+}
+
+.leaderboardScroll {
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.leaderboardTable {
+  width: max-content;
+  min-width: 640px;
+}
+
+.leaderboardRow {
+  grid-template-columns: 70px 220px 130px 120px;
+  align-items: center;
+  gap: 12px;
+  display: grid;
+}
+
+.leaderboardRow > div {
+  white-space: nowrap;
 }
 
 /*# sourceMappingURL=ronin-worldcup-axie_frontend_app_globals_1rkbbfn.css.map*/

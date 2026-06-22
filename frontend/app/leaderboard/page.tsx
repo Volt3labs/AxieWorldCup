@@ -188,41 +188,43 @@ export default function LeaderboardPage() {
       <section className="section">
         <h2>Top collectors</h2>
 
-        <div className="leaderboardTable">
-          <div className="leaderboardRow header">
-            <div>Rank</div>
-            <div>Wallet</div>
-            <div>Countries</div>
-            <div>Total NFTs</div>
-          </div>
+        <div className="leaderboardScroll">
+          <div className="leaderboardTable">
+            <div className="leaderboardRow header">
+              <div>Rank</div>
+              <div>Wallet</div>
+              <div>Countries</div>
+              <div>Total NFTs</div>
+            </div>
 
-          {collectors.map((collector, index) => (
-            <div className="leaderboardRow" key={collector.address}>
-              <div>#{index + 1}</div>
-              <div>
-                <Link
-                  href={`/inventory?address=${collector.address}`}
-                  style={{
-                    color: "inherit",
-                    textDecoration: "underline",
-                  }}
-                >
-                  {shortAddress(collector.address)}
-                </Link>
+            {collectors.map((collector, index) => (
+              <div className="leaderboardRow" key={collector.address}>
+                <div>#{index + 1}</div>
+                <div>
+                  <Link
+                    href={`/inventory?address=${collector.address}`}
+                    style={{
+                      color: "inherit",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {shortAddress(collector.address)}
+                  </Link>
+                </div>
+                <div>{collector.uniqueCountries} / 48</div>
+                <div>{collector.totalBalance}</div>
               </div>
-              <div>{collector.uniqueCountries} / 48</div>
-              <div>{collector.totalBalance}</div>
-            </div>
-          ))}
+            ))}
 
-          {collectors.length === 0 && (
-            <div className="leaderboardRow">
-              <div>-</div>
-              <div>No collectors found yet</div>
-              <div>-</div>
-              <div>-</div>
-            </div>
-          )}
+            {collectors.length === 0 && (
+              <div className="leaderboardRow">
+                <div>-</div>
+                <div>No collectors found yet</div>
+                <div>-</div>
+                <div>-</div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

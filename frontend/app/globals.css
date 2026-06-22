@@ -163,10 +163,6 @@ footer { padding: 40px 32px; text-align:center; color: var(--muted); }
     grid-template-columns: 60px 1fr;
   }
 
-  .leaderboardRow > div:nth-child(3),
-  .leaderboardRow > div:nth-child(4) {
-    display: none;
-  }
 }
 
 .rewardGrid {
@@ -452,4 +448,26 @@ footer { padding: 40px 32px; text-align:center; color: var(--muted); }
     display: flex !important;
     gap: 20px;
   }
+}
+
+.leaderboardScroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.leaderboardTable {
+  width: max-content;
+  min-width: 640px;
+}
+
+.leaderboardRow {
+  display: grid;
+  grid-template-columns: 70px 220px 130px 120px;
+  align-items: center;
+  gap: 12px;
+}
+
+.leaderboardRow > div {
+  white-space: nowrap;
 }
