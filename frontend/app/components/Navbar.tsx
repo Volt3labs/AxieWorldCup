@@ -25,6 +25,7 @@ export default function Navbar() {
         <Link href="/inventory" onClick={() => setOpen(false)}>Inventory</Link>
         <Link href="/odds" onClick={() => setOpen(false)}>Live odds</Link>
         <Link href="/leaderboard" onClick={() => setOpen(false)}>Leaderboard</Link>
+        <Link href="https://github.com/Volt3labs/AxieWorldCup/blob/main/whitepaper.md" onClick={() => setOpen(false)}>Whitepaper</Link>
       </div>
     </nav>
   );
