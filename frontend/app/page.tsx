@@ -1,6 +1,7 @@
 "use client";
 
 import { ethers } from "ethers";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { countries, imageUrl } from "./lib/countries";
@@ -18,21 +19,21 @@ declare global {
 }
 
 const MINT_CLOSE_TIME = new Date("2026-07-19T19:00:00Z").getTime();
+const GIFT_ADDRESS = "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB";
 
 export default function HomePage() {
   const [axieId, setAxieId] = useState("");
   const [status, setStatus] = useState("");
+  const [timeLeft, setTimeLeft] = useState("");
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
-  const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
     function updateTimer() {
-      const now = Date.now();
-      const distance = MINT_CLOSE_TIME - now;
+      const distance = MINT_CLOSE_TIME - Date.now();
 
       if (distance <= 0) {
         setTimeLeft("Mint closed");
@@ -40,26 +41,19 @@ export default function HomePage() {
       }
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (distance / (1000 * 60 * 60)) % 24
-      );
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((distance / (1000 * 60)) % 60);
 
       setTimeLeft(`${days}d ${hours}h ${minutes}m`);
     }
 
     updateTimer();
-
     const interval = setInterval(updateTimer, 60_000);
-
     return () => clearInterval(interval);
   }, []);
 
   function scrollSlider(amount: number) {
-    sliderRef.current?.scrollBy({
-      left: amount,
-      behavior: "smooth",
-    });
+    sliderRef.current?.scrollBy({ left: amount, behavior: "smooth" });
   }
 
   function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -68,7 +62,6 @@ export default function HomePage() {
     isDragging.current = true;
     startX.current = e.pageX - sliderRef.current.offsetLeft;
     scrollLeft.current = sliderRef.current.scrollLeft;
-
     sliderRef.current.setPointerCapture(e.pointerId);
   }
 
@@ -76,9 +69,7 @@ export default function HomePage() {
     if (!isDragging.current || !sliderRef.current) return;
 
     const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = x - startX.current;
-
-    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+    sliderRef.current.scrollLeft = scrollLeft.current - (x - startX.current);
   }
 
   function stopDragging(e?: React.PointerEvent<HTMLDivElement>) {
@@ -100,6 +91,7 @@ export default function HomePage() {
       await provider.send("eth_requestAccounts", []);
 
       const network = await provider.getNetwork();
+
       if (Number(network.chainId) !== CHAIN_ID) {
         setStatus(`Switch your wallet to Ronin chain ID ${CHAIN_ID}.`);
         return;
@@ -110,6 +102,7 @@ export default function HomePage() {
       const axie = new ethers.Contract(AXIE_CONTRACT, AXIE_ABI, signer);
 
       setStatus("Submitting Axie transfer...");
+
       const tx = await axie.safeTransferFrom(
         from,
         COLLECTION_ADDRESS,
@@ -132,20 +125,35 @@ export default function HomePage() {
       <section
         className="hero"
         style={{
-          padding: "6rem 1.5rem 4rem",
+          padding: "4.25rem 1.5rem 3rem",
           textAlign: "center",
-          maxWidth: "1000px",
+          maxWidth: "960px",
           margin: "0 auto",
         }}
       >
-        
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: ".5rem",
+            padding: ".45rem .8rem",
+            border: "1px solid rgba(255,255,255,.12)",
+            borderRadius: "999px",
+            background: "rgba(255,255,255,.05)",
+            fontSize: ".85rem",
+            opacity: 0.9,
+            marginBottom: "1.25rem",
+          }}
+        >
+          Ronin VRF-powered country draw
+        </div>
 
         <h1
           style={{
-            fontSize: "clamp(3rem, 8vw, 6rem)",
-            lineHeight: 0.95,
-            letterSpacing: "-0.05em",
-            marginBottom: "2rem",
+            fontSize: "clamp(2.4rem, 6vw, 4.6rem)",
+            lineHeight: 0.98,
+            letterSpacing: "-0.045em",
+            marginBottom: "1.25rem",
           }}
         >
           Gift an Axie.
@@ -155,62 +163,60 @@ export default function HomePage() {
 
         <p
           style={{
-            maxWidth: "820px",
+            maxWidth: "760px",
             margin: "0 auto",
-            fontSize: "1.25rem",
-            lineHeight: 1.9,
-            opacity: 0.85,
+            fontSize: "clamp(1rem, 2vw, 1.15rem)",
+            lineHeight: 1.75,
+            opacity: 0.82,
           }}
         >
-
-Every gifted Axie is released, and every country draw is powered by Ronin VRF. Collect the world's best teams, complete the 48-country set, and get access to 150 AXS in tournament rewards.
-
-Open-source, non-profit, community-built. Independent from Sky Mavis.
+          Every gifted Axie is released, and every country draw is powered by
+          Ronin VRF. Collect the world&apos;s best teams, complete the
+          48-country set, and get access to 150 AXS in tournament rewards.
+          <br />
+          
+          Open-source, non-profit, community-built. Independent from Sky Mavis.
         </p>
 
-        
-
         <div
           style={{
-            marginTop: "1.5rem",
-            padding: "1rem 1.25rem",
-            borderRadius: "16px",
-            background: "rgba(255,255,255,.05)",
-            display: "inline-block",
-            maxWidth: "100%",
-          }}
-        >
-          <code
-            style={{
-              fontSize: ".9rem",
-              wordBreak: "break-all",
-            }}
-          >
-            0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB
-          </code>
-        </div>
-
-        <div
-          style={{
-            marginTop: "2rem",
+            marginTop: "1.75rem",
             display: "flex",
+            flexWrap: "wrap",
+            gap: ".9rem",
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <button
             className="button secondary"
-            onClick={() =>
-              navigator.clipboard.writeText(
-                "0x9F0ba160473aB48027CB1B6C0fc166cc66F9F9FB"
-              )
-            }
+            onClick={() => navigator.clipboard.writeText(GIFT_ADDRESS)}
           >
             Copy Gift Address
           </button>
+
+          
         </div>
+
+        <div
+          style={{
+            marginTop: "1.25rem",
+            padding: ".85rem 1rem",
+            borderRadius: "14px",
+            background: "rgba(255,255,255,.045)",
+            display: "inline-block",
+            maxWidth: "100%",
+          }}
+        >
+          <code style={{ fontSize: ".82rem", wordBreak: "break-all" }}>
+            {GIFT_ADDRESS}
+          </code>
+        </div>
+
         <div className="mintTimer">
-          Mint closes in <strong>{timeLeft} - 19th July 19:00 GMT</strong>
+          Mint closes in <strong>{timeLeft} · 19th July 19:00 GMT</strong>
         </div>
+        
       </section>
 
       <section className="section">
@@ -274,6 +280,28 @@ Open-source, non-profit, community-built. Independent from Sky Mavis.
         >
           <Link className="button" href="/inventory">
             Check inventory
+          </Link>
+          <Link
+            className="button"
+            href="https://marketplace.roninchain.com/collections/axieworldcup"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: ".6rem",
+              textDecoration: "none",
+              marginLeft:"10px"
+            }}
+          >
+            <Image
+              src="/icons/ron-logo.png"
+              alt="Ronin"
+              width={22}
+              height={22}
+              style={{ borderRadius: "50%" }}
+            />
+            Complete your collection on Ronin Marketplace
           </Link>
         </div>
       </section>
