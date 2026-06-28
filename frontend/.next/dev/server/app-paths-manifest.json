@@ -1,3 +1,6 @@
 {
+  "/api/leaderboard/route": "app/api/leaderboard/route.js",
+  "/inventory/page": "app/inventory/page.js",
+  "/leaderboard/page": "app/leaderboard/page.js",
   "/page": "app/page.js"
 }

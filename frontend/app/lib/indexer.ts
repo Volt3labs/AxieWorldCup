@@ -288,5 +288,5 @@ export function buildCollectors(state: IndexState) {
 
       return Number(BigInt(b.totalBalance) - BigInt(a.totalBalance));
     })
-    .slice(0, 20);
+    .slice(0, 30);
 }

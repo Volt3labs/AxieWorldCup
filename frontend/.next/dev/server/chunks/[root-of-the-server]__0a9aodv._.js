@@ -387,7 +387,7 @@ function buildCollectors(state) {
             return b.uniqueCountries - a.uniqueCountries;
         }
         return Number(BigInt(b.totalBalance) - BigInt(a.totalBalance));
-    }).slice(0, 20);
+    }).slice(0, 30);
 }
 }),
 "[project]/ronin-worldcup-axie/frontend/app/api/leaderboard/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
